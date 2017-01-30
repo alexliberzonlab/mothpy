@@ -146,7 +146,7 @@ def concentration_array_demo(dt=0.01, t_max=100, draw_iter_interval=50):
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 2., 1.)
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21., 11., u_av=1.,)
+    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
                                     centre_rel_diff_scale=1.5,
@@ -162,7 +162,7 @@ def concentration_array_demo(dt=0.01, t_max=100, draw_iter_interval=50):
     im_extents = (sim_region.x_min, sim_region.x_max,
                   sim_region.y_min, sim_region.y_max)
     conc_im = plt.imshow(conc_array.T, extent=im_extents, vmin=0, vmax=3e4,
-                         cmap=cm.Reds)
+                         cmap=cm.binary_r)
     conc_im.axes.set_xlabel('x / m')
     conc_im.axes.set_ylabel('y / m')
 
@@ -292,3 +292,12 @@ def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
     _simulation_loop(dt, t_max, time_text, draw_iter_interval, update_func,
                      draw_func)
     return fig
+
+
+#run this to get a concentration array.
+#save any frame which looks like a simple plume as an image. That is your heatmap which you can use for soundmapping
+
+#I Have made the color to binary_r, it is grayscale and in reverse. brighter means, more plume.
+#Also I have made noise gain in wind model 0 to remove meandering.
+
+concentration_array_demo()

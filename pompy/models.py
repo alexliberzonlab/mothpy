@@ -287,7 +287,7 @@ class WindModel(object):
     """
 
     def __init__(self, sim_region, nx=15, ny=15, u_av=1., v_av=0., Kx=2.,
-                 Ky=2., noise_gain=5., noise_damp=0.2, noise_bandwidth=0.2,
+                 Ky=2., noise_gain=0., noise_damp=0.2, noise_bandwidth=0.2, #noise_gain=5 change to 0
                  noise_rand=np.random):
         """
         Parameters
