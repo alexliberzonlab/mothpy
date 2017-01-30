@@ -1,4 +1,4 @@
-## `pompy` - *p*uff-based *o*dour plume *m*odel in *Py*thon
+Forking this for personal modifications.
 
 `pompy` is a NumPy based implementation of the puff-based odour plume model described in [*Filament-Based Atmospheric Dispersion Model to Achieve Short Time-Scale Structure of Odor Plumes*](http://link.springer.com/article/10.1023%2FA%3A1016283702837#page-1) by Farrell et al. (2002).
 
