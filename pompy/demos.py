@@ -300,4 +300,8 @@ def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
 #I Have made the color to binary_r, it is grayscale and in reverse. brighter means, more plume.
 #Also I have made noise gain in wind model 0 to remove meandering.
 
-concentration_array_demo()
+#concentration_array_demo()
+# wind_vel_and_conc_demo()
+# conc_point_val_demo()
+# wind_model_demo()
+plume_model_demo()
