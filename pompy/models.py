@@ -112,7 +112,6 @@ class InvalidCentreRelDiffScaleError(Exception):
     """
     pass
 
-
 class PlumeModel(object):
 
     """
@@ -490,6 +489,25 @@ class WindModel(object):
         """Calculates centred first sums."""
         return (f[2:, 1:-1] + f[0:-2, 1:-1]), (f[1:-1, 2:]+f[1:-1, 0:-2])
 
+
+class Moth(object):
+    """
+    Moves within the field, tracking plume and wind data and navigating accordingly. 
+    In this early design it is not affected by wind velocity, and can move freely.
+    parameters:
+    x - float
+       Posistion at x
+    y - float
+       Position at y
+    u - float
+       Velocity on x axis
+    v - on y axis
+       Velocity on y axis
+    alpha - float
+       Angle of attack
+    D - float
+       Distance travled witout scent after which the moth changes direction
+    """
 
 class ColouredNoiseGenerator(object):
 
