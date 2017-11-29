@@ -491,23 +491,47 @@ class WindModel(object):
 
 
 class Moth(object):
+    def __init__(self,x,y,u,v,alpha,D):
     """
     Moves within the field, tracking plume and wind data and navigating accordingly. 
     In this early design it is not affected by wind velocity, and can move freely.
     parameters:
-    x - float
+    x : float
        Posistion at x
-    y - float
+    y : float
        Position at y
-    u - float
+    u : float
        Velocity on x axis
-    v - on y axis
+    v : on y axis
        Velocity on y axis
-    alpha - float
+    alpha : float
        Angle of attack
-    D - float
-       Distance travled witout scent after which the moth changes direction
+    D : float
+       Distance travled without scent until the moth changes direction
     """
+        self.x = x
+        self.y = y
+        self.u = u
+        self.v = v
+        self.alpha = alpha
+        self.D = D
+    def is_smelling(self,x,y,plume matrix):
+        """
+        determines if the moth currently smelling  pheromones
+        returns true/false
+        """
+    def change_direction():
+        """
+        determines if and when the moth changes direction of movement
+        technically, reverses v
+        """ 
+    def Timer():
+        """
+        Counts down from time T. If time of measurement is larger than T, it resets the timer and call change_direction
+        """
+    
+    
+
 
 class ColouredNoiseGenerator(object):
 
