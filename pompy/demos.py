@@ -82,7 +82,7 @@ def wind_model_demo(dt=0.01, t_max=100, draw_iter_interval=20):
                                         wind_model.velocity_field[:, :, 1].T)
     # start simulation loop
     _simulation_loop(dt, t_max, time_text, draw_iter_interval, update_func,
-                     draw_func)
+                     draw_func) 
     return fig
 
 
@@ -293,7 +293,61 @@ def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
                      draw_func)
     return fig
 
+def moth_demo(dt=0.01, t_max=60, draw_iter_interval=20):
+    """
+    a copy of the concetration_array_demo with the moth actions integrated
+    """
+    # define simulation region
+    wind_region = models.Rectangle(0., -2., 10., 2.)
+    sim_region = models.Rectangle(0., -1., 2., 1.)
+    #call moth model, set simulation region and starting position 
+    moth_model = models.moth_model(sim_region, 499, 170)
+    # set up wind model
+    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
+    # set up plume model
+    plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
+                                    centre_rel_diff_scale=1.5,
+                                    puff_release_rate=500,
+                                    puff_init_rad=0.001)
 
+    # set up figure
+    fig, time_text = _set_up_figure('Moth flying in Concentration field')
+    # display initial concentration field as image
+    #set concetration array generator
+    array_gen = processors.ConcentrationArrayGenerator(sim_region, 0.01, 500,
+                                                       500, 1.)
+    # display initial concentration field as image
+    conc_array = array_gen.generate_single_array(plume_model.puff_array)
+    im_extents = (sim_region.x_min, sim_region.x_max,
+                  sim_region.y_min, sim_region.y_max)
+    #conc_im is the displayed image of conc_array
+    conc_im = plt.imshow(conc_array.T, extent=im_extents, vmin=0, vmax=3e4,
+                         cmap=cm.binary_r)
+    conc_im.axes.set_xlabel('x / m')
+    conc_im.axes.set_ylabel('y / m')
+
+    # define update and draw functions
+
+    def update_func(dt, t):
+        wind_model.update(dt)
+        plume_model.update(dt)
+        #moth_model.update(dt)   moth model should have an update method
+        #change position function will subtitute moth update for the time being
+        moth_model.change_position(array_gen.generate_single_array(plume_model.puff_array),wind_model.velocity_at_pos(moth_model.x,moth_model.y),0.01)
+    #moth_model.moth_array takes both models as input, calculates moth position and adds that poisition(matrix addition) to the input
+    #set _data then updates the plot image using the new matrix     
+    draw_func = lambda: conc_im.set_data(
+         moth_model.moth_array(array_gen.generate_single_array(plume_model.puff_array),wind_model))
+        # start simulation loop
+    _simulation_loop(dt, t_max, time_text, draw_iter_interval, update_func,
+                     draw_func)
+    return fig
+
+
+
+
+
+    
 #run this to get a concentration array.
 #save any frame which looks like a simple plume as an image. That is your heatmap which you can use for soundmapping
 
@@ -302,6 +356,7 @@ def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
 
 #concentration_array_demo()
 # wind_vel_and_conc_demo()
-# conc_point_val_demo()
-# wind_model_demo()
-plume_model_demo()
+#conc_point_val_demo()
+#wind_model_demo()
+#plume_model_demo()
+moth_demo()
