@@ -331,7 +331,8 @@ def moth_demo(dt=0.01, t_max=60, draw_iter_interval=20):
     def update_func(dt, t):
         wind_model.update(dt)
         plume_model.update(dt)
-        #moth_model.update(dt)   moth model should have an update method, even if just for syntax sake
+        #moth_model.update(dt)   moth model should have an update method
+        #change position function will subtitute moth update for the time being
         moth_model.change_position(array_gen.generate_single_array(plume_model.puff_array),wind_model.velocity_at_pos(moth_model.x,moth_model.y),0.01)
     #moth_model.moth_array takes both models as input, calculates moth position and adds that poisition(matrix addition) to the input
     #set _data then updates the plot image using the new matrix     
