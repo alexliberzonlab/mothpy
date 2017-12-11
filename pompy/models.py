@@ -524,7 +524,7 @@ class moth_model(object):
         moth_array=np.zeros((500,500))
         for i in range(10):
             for j in range(10):
-                moth_array[self.x-i][self.y-j]=3e4
+                moth_array[int(self.x)-i][int(self.y)-j]=3e4
         #project moth unto same matrix as the concetration
         return conc_array + moth_array
     
@@ -549,11 +549,11 @@ class moth_model(object):
         """
     def change_position(self,conc_array,wind_vel_at_pos,dt):
         if self.is_smelling(conc_array):
-            #when the moth is smelling, it flies directly against the wind
+            #when the moth is smelling, it flies directly against the wind,otherwise it waits
             self.u = -wind_vel_at_pos[0]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1])
             self.v = -wind_vel_at_pos[1]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1])
-            self.x = self.x + self.u*dt
-            self.y = self.y + self.v*dt
+            self.x += self.u*dt
+            self.y += self.v*dt
             
             
 
