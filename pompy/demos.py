@@ -293,7 +293,7 @@ def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
                      draw_func)
     return fig
 
-def moth_demo(dt=0.01, t_max=60, draw_iter_interval=20):
+def moth_demo(dt=0.01, t_max=8, draw_iter_interval=20):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
@@ -301,7 +301,7 @@ def moth_demo(dt=0.01, t_max=60, draw_iter_interval=20):
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 2., 1.)
     #call moth model, set simulation region and starting position 
-    moth_model = models.moth_model(sim_region, 499, 170)
+    moth_model = models.moth_model3(sim_region, 499.0, 100.0)
     # set up wind model
     wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
     # set up plume model
@@ -331,9 +331,8 @@ def moth_demo(dt=0.01, t_max=60, draw_iter_interval=20):
     def update_func(dt, t):
         wind_model.update(dt)
         plume_model.update(dt)
-        #moth_model.update(dt)   moth model should have an update method
-        #change position function will subtitute moth update for the time being
-        moth_model.change_position(array_gen.generate_single_array(plume_model.puff_array),wind_model.velocity_at_pos(moth_model.x,moth_model.y),0.01)
+        #moth_model.update(dt)   moth model should have an update method, even if just for syntax sake
+        moth_model.update(array_gen.generate_single_array(plume_model.puff_array),wind_model.velocity_at_pos(moth_model.x,moth_model.y),0.01)
     #moth_model.moth_array takes both models as input, calculates moth position and adds that poisition(matrix addition) to the input
     #set _data then updates the plot image using the new matrix     
     draw_func = lambda: conc_im.set_data(
