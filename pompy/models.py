@@ -10,7 +10,7 @@ __license__ = 'MIT'
 
 import numpy as np
 import scipy.interpolate as interp
-
+import random
 
 class Puff(object):
     """
@@ -545,6 +545,7 @@ class ColouredNoiseGenerator(object):
         dx_dt = self._A.dot(self._x) + self._B * u
         # apply update with Euler integration
         self._x += dx_dt * dt
+        
 class moth_model(object):
     def __init__(self,sim_region,x,y, u=0.0, v=0.0,alpha=0,T=0, speed = 30.0):
         self.x = x
@@ -581,6 +582,10 @@ class moth_model(object):
         for i in range(10):
             for j in range(10):
                 moth_array[int(self.x)-i][int(self.y)-j]=3e4
+        if self.is_smelling(conc_array, threshold=500):
+            for i in range(6):
+                for j in range(6):
+                    moth_array[int(self.x)-i-2][int(self.y)-j-2]=0
         #project moth unto same matrix as the concetration
         return conc_array + moth_array
     
@@ -705,7 +710,7 @@ class moth_model1(object):
                     self.go_left(wind_vel_at_pos,dt)
         self.x += self.u*dt
         self.y += self.v*dt
-        print 'x =', self.x, ', y = ', self.y , ', t = ',self.T
+        #print 'x =', self.x, ', y = ', self.y , ', t = ',self.T
 
 class moth_model2(object):
     """
@@ -724,6 +729,7 @@ class moth_model2(object):
         self.sim_region = sim_region
         self.speed = speed
         self.searching = False
+
 
     #moth array takes in concetration and wind velocity models
     #it returns an array showing the current concetration array and the position of moth
@@ -788,7 +794,7 @@ class moth_model3(object):
     Traversing golden ration moth algorithm-
     just like moth_model2 only every time the moth changes direction the duration on the timer is increased
     """
-    def __init__(self,sim_region,x,y, u=0.0, v=0.0,alpha=70,T=0, speed = 160.0):
+    def __init__(self,sim_region,x,y, u=0.0, v=0.0,alpha=80,T=0, speed = 160.0):
         self.x = x
         self.y = y
         self.u = u
@@ -859,9 +865,210 @@ class moth_model3(object):
         self.x += self.u*dt
         self.y += self.v*dt
         #print 'x =', self.x, ', y = ', self.y , ', t = ',self.T
-        
 
+
+class moth_modular(object):
+    def __init__(self,sim_region,x,y,nav_type = 1, cast_type = 3, wait_type = 1, alpha=45,duration =0.2, speed = 200.0,turned_on = False):
+        self.x = x
+        self.y = y
+        self.u = 0
+        self.v = 0
+        self.base_alpha = (-1)**random.getrandbits(1)*np.radians(alpha)
+        self.alpha = self.base_alpha
+        self.base_duration = duration
+        self.duration = duration
+        self.sim_region = sim_region
+        self.speed = speed
+        self.going_right = random.getrandbits(True)
+        self.searching = False
+        self.turned_on = False
+        self.nav_type = nav_type
+        self.cast_type = cast_type    
+        self.wait_type = wait_type
+        self.T = 0
+        self.conc_max = 1
+        self.base_conc = 20000
+
+        
+    """
+    Moves within the field, tracking plume and wind data and navigating accordingly. 
+    In this early design it is not affected by wind velocity, and can move freely.
+    parameters:
+    x : float
+       Posistion at x
+    y : float
+       Position at y
+    u : float
+       Velocity on x axis
+    v : on y axis
+       Velocity on y axis
+    alpha : float
+       Angle of attack
+    D : float
+       Distance travled without scent until the moth changes direction
+    """
+    def change_direction_bool(self):
+        """
+        flips the boolian that determines direction
+        """
+        self.going_right = not self.going_right
+    def update_duration(self):
+        if self.T%0.1:
+            self.duration = self.base_duration*min(1,self.base_conc/self.conc_max)
+        
+    def update_alpha(self):
+        #alpha increseas as odor increases
+        #alpha is always smaller than pi/2
+        if self.T%0.1:
+            self.alpha = np.sign(self.alpha)*(1.5708 - ((1.5708 - np.abs(self.base_alpha)) * min(1 , self.base_conc/self.conc_max)))
+            
+    def calculate_beta(self,wind_vel_at_pos):
+        self.beta = np.arcsin(wind_vel_at_pos[1]/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2))
+    def change_direction(self):
+        self.alpha = -self.alpha
+    
+    def is_smelling(self,conc_array, threshold=500):
+        """
+        determines if the moth currently smelling  pheromones
+        returns true/false
+        """
+        #print self.x,self.y, conc_array[self.x][self.y]
+        if conc_array[self.x][self.y]> self.conc_max:
+            self.conc_max = conc_array[self.x][self.y]
+        return conc_array[self.x][self.y]>threshold        
+        
+    class Timer(object):
+        def __init__(self,T_start,duration=0.2):
+            self.T_start = T_start
+            self.duration = duration
+        def is_running(self,T_current):
+            #takes in current time and compares to start time. 
+            #timer.is_running is True as long as the difference is smaller then the duration.
+            return T_current - self.T_start < self.duration
+    #motion functions are defined in advance
+    def go_upwind(self,wind_vel_at_pos):
+            self.u = -wind_vel_at_pos[0]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2)
+            self.v = -wind_vel_at_pos[1]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2)
+    def go_right(self,wind_vel_at_pos):
+            self.u = -wind_vel_at_pos[1]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2)
+            self.v = +wind_vel_at_pos[0]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2)
+    def go_left(self,wind_vel_at_pos):
+            self.u = +wind_vel_at_pos[1]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2)
+            self.v = -wind_vel_at_pos[0]*self.speed/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2)        
+    def cast2(self,wind_vel_at_pos):
+            #similar to nav_type 3
+            #set timer as soon as moth isn't smelling odur, turn as soon as timer is over
+            #duration grows every time timer is used
+            if not self.searching:
+                #start timer
+                self.timer = self.Timer(self.T,self.duration)
+                self.searching = True
+            elif not self.timer.is_running(self.T):
+                self.change_direction()
+                self.timer = self.Timer(self.T,self.duration)
+                self.duration = self.duration*2                    
+            self.calculate_beta(wind_vel_at_pos)
+            self.u = -self.speed*np.cos(self.alpha+self.beta)
+            self.v = self.speed*np.sin(self.alpha+self.beta)
+
+    #Here the navigation types that were chosen in the initation come into play      
+    def navigate(self,wind_vel_at_pos):
+        if self.nav_type == 1:
+            self.go_upwind(wind_vel_at_pos)
+
+        if self.nav_type == 2:
+            #traversing against wind direction at angle alpha
+            #wind direction
+            #ground speed
+            self.calculate_beta(wind_vel_at_pos)
+            self.u = -self.speed*np.cos(self.alpha+self.beta)
+            self.v = self.speed*np.sin(self.alpha+self.beta)
+        """    
+        if self.nav_type == 3:
+            #traversing against wind direction at angle alpha
+            #wind direction
+            #ground speed
+            self.calculate_beta(wind_vel_at_pos)
+            self.u = -self.speed*np.cos(self.alpha + self.beta)
+            self.v = self.speed*np.sin(self.alpha + self.beta)
+        """ 
+        #no matter which nav mode is chosen, it turns the moth on     
+        self.turned_on = True
+        self.searching = False
+
+    def cast(self,wind_vel_at_pos):
+        if self.cast_type == 1:
+            self.u=0
+            self.v=0
+
+        if self.cast_type == 2:
+            #define different alphas for different casting patterns
+            self.cast2(wind_vel_at_pos)
+
+        if self.cast_type == 3:
+            #same as cast_type 2, only alpha and duration change according 
+            self.update_alpha()
+            self.update_duration()
+            self.cast2(wind_vel_at_pos)
+
+        if self.cast_type == 4:
+            if not self.searching:
+                    #start timer
+                    self.timer = self.Timer(self.T)
+                    self.duration = self.base_duration
+                    self.searching = True
+            else:
+                    #if timer is over it will change direction
+                    if not self.timer.is_running(self.T):
+                        self.change_direction_bool()
+                        self.timer = self.Timer(self.T , self.duration)
+                        self.duration = self.duration*1.6
+                        print self.duration
+                    #the moth will fly right or left, until it finds the scent again
+                    if self.going_right:
+                        self.go_right(wind_vel_at_pos)
+                    else:
+                        self.go_left(wind_vel_at_pos)
+
+            
+            
+    def wait(self,wind_vel_at_pos):
+        if self.wait_type == 1:
+            self.u=0
+            self.v=0
+
+        if self.wait_type == 2:
+            #coin toss between choosing to move left or right right
+            #wind angle, constant ground speed
+            if self.going_right == 1:
+                self.go_right(wind_vel_at_pos)
+            else:
+                self.go_left(wind_vel_at_pos)
+             
+            
+            
+    def update(self,conc_array,wind_vel_at_pos,dt):        
+        if self.is_smelling(conc_array):
+            self.navigate(wind_vel_at_pos)
+        elif self.turned_on:
+            self.cast(wind_vel_at_pos)
+        else:
+            self.wait(wind_vel_at_pos)
+        self.x += self.u*dt
+        self.y += self.v*dt
+        self.T += dt
+        
+    def moth_array(self, conc_array, wind_vel_at_pos):
+        #draw moth position on matrix
+        moth_array=np.zeros((500,500))
+        for i in range(10):
+            for j in range(10):
+                moth_array[int(self.x)-i][int(self.y)-j]=3e4
+        if self.is_smelling(conc_array, threshold=500):
+            for i in range(6):
+                for j in range(6):
+                    moth_array[int(self.x)-i-2][int(self.y)-j-2]=0
+        #project moth unto same matrix as the concetration
+        return conc_array + moth_array
 
     
-
-
