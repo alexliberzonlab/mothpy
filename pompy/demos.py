@@ -95,7 +95,7 @@ def plume_model_demo(dt=0.01, t_max=100, draw_iter_interval=200):
     sim_region = models.Rectangle(0., -2., 8., 2.)
     # set up wind model
     wind_model = models.WindModel(sim_region, 21., 11.,
-                                  u_av=1., Kx=2., Ky=2.)
+                                  u_av=1., kx=2., ky=2.)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.5, 0., 0.), wind_model,
                                     puff_release_rate=10,
