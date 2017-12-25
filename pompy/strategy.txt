@@ -30,3 +30,5 @@ Tasks for next week -
 4. Finish reading the article and implement new movement types.
 5. to realize (even theoretically) how implement a timer on the "is_smelling" function
 that makes the moth act as if it is still smelling for certein time even out of the plume.
+
+
