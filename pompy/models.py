@@ -912,7 +912,9 @@ class moth_modular(object):
         flips the boolian that determines direction
         """
         self.going_right = not self.going_right
+
     def update_duration(self):
+        """ Docstring are missing """
         if self.T%0.1:
             self.duration = self.base_duration*min(1,self.base_conc/self.conc_max)
         
