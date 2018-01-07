@@ -626,6 +626,12 @@ class moth_modular(object):
         A timer has been implemented in order to allow the moth navigate
         even with a lower threshold - After the odor is gone, the moth
         will still act as if smelling for time lamba.
+        
+        Needed inputs:
+            self.x, self.y : position of the navigator 
+            self.threshold : threshold of concentration
+            self.timer : timer
+            conc_array : array of concentration
         """
         if conc_array[self.x][self.y]>self.threshold:
             self.smell_timer = self.Timer(self.T,self.lamda)
