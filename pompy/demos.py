@@ -301,7 +301,7 @@ def moth_demo(dt=0.01, t_max = 10, draw_iter_interval=20):
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 2., 1.)
     #call moth model, set simulation region and starting position 
-    moth_model = models.moth_modular(sim_region, 300.0, 340.0)
+    moth_model = models.moth_modular(sim_region, 450.0, 300.0)
     # set up wind model
     wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
     # set up plume model
@@ -334,7 +334,7 @@ def moth_demo(dt=0.01, t_max = 10, draw_iter_interval=20):
         #moth_model.update(dt)   moth model should have an update method, even if just for syntax sake
         moth_model.update(array_gen.generate_single_array(plume_model.puff_array),wind_model.velocity_at_pos(moth_model.x,moth_model.y),0.01)
         #calculate proximity between moth and source
-        if np.sqrt(moth_model.x**2+moth_model.x**2)<40:
+        if np.sqrt(moth_model.x**2+moth_model.x**2)<20:
             print "And they lived happily ever after"
             
     #moth_model.moth_array takes both models as input, calculates moth position and adds that poisition(matrix addition) to the input

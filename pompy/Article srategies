@@ -1,0 +1,7 @@
+In order to apply the strategies given in "Tracking of Fluid-Advected Odor Plumes: Strategies
+Inspired by Insect Orientation to Pheromone" choose the following settings:
+
+Wait type is always 1
+Startegy one is defined as nav 1, cast 2 gamma = 90
+Strategy two is defined as nav 3, cast 2 gamma = 90
+Strategy three is defined as nav 4, cast 2 gamma = 90
