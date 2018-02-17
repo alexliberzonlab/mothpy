@@ -14,6 +14,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
+import moth
 import models
 import processors
 import scipy.misc
@@ -37,7 +38,7 @@ def _set_up_figure(title_text):
 
 
 def _simulation_loop(dt, t_max, time_text, draw_iter_interval, update_func,
-                     draw_func):
+                     draw_func1,draw_func2 = 0):
     """ Helper function for running simulation loop.
 
     Runs loop with time-step updates  applied to models in update_func and any
@@ -49,8 +50,11 @@ def _simulation_loop(dt, t_max, time_text, draw_iter_interval, update_func,
         update_func(dt, t)
         # only update display after a batch of updates to increase speed
         if i % draw_iter_interval == 0:
-            draw_func()
-
+            draw_func1()
+            #drawfunction 2 is not always needed, or even defined - therefore a mechanism is defined for it's selective use
+            if not draw_func2 == 0:
+                draw_func2()
+            
 
 def wind_model_demo(dt=0.01, t_max=100, draw_iter_interval=20):
     """
@@ -134,7 +138,7 @@ def plume_model_demo(dt=0.01, t_max=100, draw_iter_interval=200):
     return fig
 
 
-def concentration_array_demo(dt=0.01, t_max=100, draw_iter_interval=50):
+def concentration_array_demo(dt=0.01, t_max=10, draw_iter_interval=50):
     """
     Demonstration of setting up plume model and processing the outputted
     puff arrays with the ConcentrationArrayGenerator class, the resulting
@@ -230,7 +234,7 @@ def conc_point_val_demo(dt=0.01, t_max=5, draw_iter_interval=20, x=1., y=0.0):
     return fig
 
 
-def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
+def wind_vel_and_conc_demo(dt=0.01, t_max=10, draw_iter_interval=50):
     """
     Demonstration of setting up plume model and processing the outputted
     puff arrays with the ConcentrationArrayGenerator class, the resulting
@@ -291,15 +295,16 @@ def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
                      draw_func)
     return fig
 
-def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 4, draw_iter_interval=1):
+def prep_moth(dt=0.01, t_max = 2.1, draw_iter_interval=1):
     """
-    a copy of the concetration_array_demo with the moth actions integrated
+    saves a list of concetration arrays and wind arrays to be later taken as input by the reader moth
     """
+    conc_list =[]
+    wind_list =[]
     # define simulation region
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 2., 1.)
-    #call moth model, set simulation region and starting position 
-    moth_model = models.moth_modular(sim_region, x_start, y_start)
+
     # set up wind model
     wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
     # set up plume model
@@ -313,18 +318,44 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 4, draw_iter_interv
                                                        500, 1.)
     # display initial concentration field as image
     conc_array = array_gen.generate_single_array(plume_model.puff_array)
-    
-    #set up text file to recored the trajectory as a string of tuples
-    file_name = "moth_trajectory" + "(" + str(x_start) + "," + str(y_start) + ")"
-    #moth_trajectory_file  = open(file_name+ '.txt', "w")
-    moth_trajectory_list = []
 
     # define update and draw functions
-
+    
     def update_func(dt, t):
         wind_model.update(dt)
         plume_model.update(dt)
-        moth_model.update(array_gen.generate_single_array(plume_model.puff_array),wind_model.velocity_at_pos(moth_model.x,moth_model.y),0.01)
+        conc_array = array_gen.generate_single_array(plume_model.puff_array)
+        scipy.misc.imsave(str(t*100) + '.jpg', conc_array)
+    
+    draw_func1 = lambda : conc_list.append(conc_array)
+    draw_func2 = lambda : wind_list.append((wind_model.velocity_field[:, :, 0],
+                          wind_model.velocity_field[:, :, 1]))
+    # start simulation loop
+    _simulation_loop(dt, t_max, 0, draw_iter_interval, update_func,
+                     draw_func1,draw_func2)
+    return (conc_list, wind_list)
+
+    
+def reader_moth(conc_list,wind_list, x_start = 255, y_start = 50,nav_type = 3 ,cast_type = 2, wait_type = 1, dt=0.01, t_max = 2, draw_iter_interval=1):
+    """
+    a copy of the concetration_array_demo with the moth actions integrated
+    """
+    # define simulation region
+    sim_region = models.Rectangle(0., -1., 2., 1.)
+    #call moth model, set simulation region and starting position 
+    moth_model = moth.moth_modular(sim_region, x_start, y_start, nav_type, cast_type, wait_type)
+    
+    #set up text file to recored the trajectory as a string of tuples
+    file_name = "moth_trajectory" + "(" + str(x_start) + "," + str(y_start) + ")"
+    moth_trajectory_file = open(file_name+ '.txt', "w")
+    moth_trajectory_list = []
+
+    # define update and draw functions
+    def update_func(dt, t):
+        x_wind_array = wind_list[int(t/dt)+1][0]#originally there should be here - wind_list[int(t/dt)][0] but it bugs out so 1 is a place holder for now
+        y_wind_array = wind_list[int(t/dt)+1][1]
+        wind_vector =(x_wind_array[int(moth_model.x/500*21)][int(moth_model.y/500*21)],y_wind_array[int(moth_model.x/500*21)][int(moth_model.y/500*21)])
+        moth_model.update(conc_list[int(t/dt)+1],wind_vector,0.01)
             
     #moth_model.moth_array takes both models as input, calculates moth position and adds that poisition(matrix addition) to the input
     #set _data then updates the plot image using the new matrixmoth_model.moth_array(array_gen.generate_single_array(plume_model.puff_array),wind_model))
@@ -332,13 +363,12 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 4, draw_iter_interv
     # start simulation loop
     _simulation_loop(dt, t_max, 0, draw_iter_interval, update_func,
                      draw_func)
-    #moth_trajectory_file.write(str(moth_trajectory_list))
-    #moth_trajectory_file.close()
     #create a matrix, insert a trajectory list inside
     trajectory_array = np.zeros((500,500))
     for tup in moth_trajectory_list:
         trajectory_array[tup[0]][tup[1]] = 250
     scipy.misc.imsave(file_name + '.jpg', trajectory_array)
+    moth_trajectory_file.write(str(moth_trajectory_list))
     print "done"
 
 
@@ -354,7 +384,7 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 4, draw_iter_interv
 #conc_point_val_demo()
 #wind_model_demo()
 #plume_model_demo()
-for i in range(5):
-    moth_demo(450,245+i*10)
+prep = prep_moth()
+reader_moth(prep[0],prep[1])
 
 
