@@ -1,0 +1,32 @@
+
+To do: Test every different movement mode (not every combination!) Done.
+
+Naviagation:
+1. Go upwind. Tested.
+2.Traverse at alpha angle to wind direction 
+If alpha == 0, it is excatly the same as mode 1
+Note that the moth cannot turn while in this navigation mode. Tested.
+
+Casting:
+1.stop completely.Tested.
+2.traverse at alpha angle. Start timer at the start of every turn and turn when it ends.
+Duration grows in a factor of 1.6 every time the moth turns. Tested.
+3.the same as cast_type 2 with the addition of a modification of duration and alpha according to odor levels. Note that there is only one alpha per moth. that may be changed in the future. Tested.
+4.90 degree angles using a timer. duration grows at every turn. Tested.
+
+Waiting:
+1. stopping completely (ground speed = 0) Tested.
+2.randomly choosing between left and right and proceeding in that direction. Tested (but would need to make the enviorment semi infinite for it to work properly.) 
+
+
+Best combination in terms of accuracy so far is nav_type 1, Cast type_3, wait type_1
+
+
+
+Tasks for next week -
+1. update_alpha and update_duration have not yet been fine-tuned
+2. There is no proper "Operations research" for different moths - I should put in a function that saves the movement of the moth as a list of (x,y) tuples 
+3. Another function that presents the list created in #2 on a matrix using imshow.
+4. Finish reading the article and implement new movement types.
+5. to realize (even theoretically) how implement a timer on the "is_smelling" function
+that makes the moth act as if it is still smelling for certein time even out of the plume.
