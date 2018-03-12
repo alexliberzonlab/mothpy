@@ -311,7 +311,7 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 4, draw_iter_interv
         array_dict["trajectory_array{0}".format(i)] = np.zeros((500,500))
         
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
+    wind_model = models.WindModel(wind_region, 21, 11, noise_gain=0, u_av=1.,)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
                                     centre_rel_diff_scale=1.5,
@@ -357,7 +357,7 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 4, draw_iter_interv
             array_dict["trajectory_array{0}".format(i)][tup[0]][tup[1]] = 250
         scipy.misc.imsave(file_name + str(i)+'.jpg', array_dict["trajectory_array{0}".format(i)])
             
-    print "done"
+    print("done")
 
 
 
