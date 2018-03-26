@@ -6,50 +6,23 @@ matplotlib functions.
 
 from __future__ import division
 
-__authors__ = 'Matt Graham'
-__license__ = 'MIT'
+__authors__ = 'Noam Benelli'
+__license__ = 'TAU'
 
 
 import sys
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
-import models
+
 import processors
 import scipy.misc
 
-
-def _close_handle(event):
-    print('Simulation aborted.')
-    sys.exit()
-
-
-def _set_up_figure(title_text):
-    """ Generate figure and attach close event. """
-    fig = plt.figure()
-    fig.canvas.set_window_title('Odour plume simulation: ' + title_text)
-    fig.canvas.mpl_connect('close_event', _close_handle)
-    # add simulation time text
-    time_text = fig.text(0.05, 0.95, 'Simulation time: -- seconds')
-    # start matplotlib interactive mode
-    plt.ion()
-    return fig, time_text
-
-
-def _simulation_loop(dt, t_max, time_text, draw_iter_interval, update_func,
-                     draw_func):
-    """ Helper function for running simulation loop.
-
-    Runs loop with time-step updates  applied to models in update_func and any
-    relevant drawing actions applied in draw_func.
-    """
-    num_iter = int(t_max/dt + 0.5)
-    for i in range(1, num_iter + 1):
-        t = i * dt
-        update_func(dt, t)
-        # only update display after a batch of updates to increase speed
-        if i % draw_iter_interval == 0:
-            draw_func()
+import os, sys
+sys.path.append(os.path.join(...))
+from pompy import models
+from pompy import demos
+from pompy import processors
 
 def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interval=1):
     """
@@ -117,7 +90,7 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interv
 
             
     # start simulation loop
-    _simulation_loop(dt, t_max, 0, draw_iter_interval, update_func,
+    demos._simulation_loop(dt, t_max, 0, draw_iter_interval, update_func,
                      draw_func)
     """
     #moth_trajectory_file.write(str(moth_trajectory_list))
