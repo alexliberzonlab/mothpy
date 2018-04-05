@@ -9,3 +9,8 @@ def circle(array, x, y, r=5, color = (1,0,0)):
 
 def square(array,x, y, a=3, color = (0,1,0)):
            array[y-a:y+a,x-a:x+a] = color
+
+
+"""
+this message is only here to test that git is working plz ignore or delete
+"""
