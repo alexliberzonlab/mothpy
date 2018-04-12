@@ -21,7 +21,38 @@ from demos import _close_handle,_set_up_figure,_simulation_loop
 from shapes import circle,square
 
 
-def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interval=1):
+
+#Now we shall add the Kalman filter, based heavily on Greg Czerniak's implementation.
+class KalmanFilterLinear:
+  def __init__(self,_A, _B, _H, _x, _P, _Q, _R):
+    self.A = _A                      # State transition matrix.
+    self.B = _B                      # Control matrix.
+    self.H = _H                      # Observation matrix.
+    self.current_state_estimate = _x # Initial state estimate.
+    self.current_prob_estimate = _P  # Initial covariance estimate.
+    self.Q = _Q                      # Estimated error in process.
+    self.R = _R                      # Estimated error in measurements.
+  def GetCurrentState(self):
+    return self.current_state_estimate
+  def Step(self,control_vector,measurement_vector):
+    #---------------------------Prediction step-----------------------------
+    predicted_state_estimate = self.A * self.current_state_estimate + self.B * control_vector
+    predicted_prob_estimate = (self.A * self.current_prob_estimate) * np.transpose(self.A) + self.Q
+    #--------------------------Observation step-----------------------------
+    innovation = measurement_vector - self.H*predicted_state_estimate
+    innovation_covariance = self.H*predicted_prob_estimate*np.transpose(self.H) + self.R
+    #-----------------------------Update step-------------------------------
+    kalman_gain = predicted_prob_estimate * np.transpose(self.H) * np.linalg.inv(innovation_covariance)
+    self.current_state_estimate = predicted_state_estimate + kalman_gain * innovation
+    # We need the size of the matrix so we can make an identity matrix.
+    size = self.current_prob_estimate.shape[0]
+    # eye(n) = nxn identity matrix.
+    self.current_prob_estimate = (np.eye(size)-kalman_gain*self.H)*predicted_prob_estimate
+
+
+
+    
+def moth_demo(x_start = 450, y_start = 330, dt=0.01, t_max = 5, draw_iter_interval=1):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
@@ -36,7 +67,7 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interv
     del_list = [] # a list of the moth indices that finished the track and were deleted 
 
     num_it=1 #number of iterations
-    dist_it=5 #distance on y axis between starting points on different iterations
+    dist_it=100 #distance on y axis between starting points on different iterations
     for i in range(num_it):
         moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start-i*dist_it)
         list_dict["moth_trajectory_list{0}".format(i)] = []
@@ -55,13 +86,10 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interv
                                                        500, 1.)
     # display initial concentration field as image
     conc_array = array_gen.generate_single_array(plume_model.puff_array)
-    
     #set up text file to recored the trajectory as a string of tuples
     file_name = "moth_trajectory" + "(" + str(x_start) + "," + str(y_start) + ")"
     
-
     # define update and draw functions
-
     def update_func(dt, t):
         wind_model.update(dt)
         plume_model.update(dt)
@@ -83,15 +111,13 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interv
                     times_list.append(T)
                     del moth_dict["moth{0}".format(i)]
                     del_list.append(i)
-                
-
             
     # start simulation loop
     _simulation_loop(dt, t_max, 0, draw_iter_interval, update_func,
                      draw_func)
 
     """
-    after the simulation is done, list_dict should be reedited to form diff_list_dict.
+    after the simulation is done, list_dict is reedited to form diff_list_dict.
     difference list dictionary is a dictionary containing lists, each list represents a diffrent moth
     and each item in the list is a tuple of the form (x,y,T,odor found/odor lost/none, is turning/isn't turning)
     """
@@ -120,8 +146,39 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interv
                     
                 diff_list.append((x,y,T,odor,turning))
         diff_dict["diff_list{0}".format(i)] = diff_list
+
+
+    #implement the Kalman filter:
+    state_transition = np.matrix([[1,dt,0,0],[0,1,0,0],[0,0,1,dt],[0,0,0,1]])
+    control_matrix = np.matrix([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
+    control_vector = np.matrix([[0],[0],[0],[0]])
+    observation_matrix = np.eye(4)
+    initial_probability = np.eye(4)
+    process_covariance =0*np.eye(4) #A crucial factor in this process
+    measurement_covariance = np.eye(4)*0.01
     
-    
+    #a dictionary of lists of the kalman corrections - (x,y) only.
+    kalman_dict = {}
+    #for each list in the list dictionary we will create a new kalman list 
+    for i in range(num_it):
+        kalman_dict["Kalman_list{0}".format(i)] = []   
+        #initiate Kalman filter with our specific parameters
+        initial_state = np.matrix([[x_start],[0],[y_start],[0]])  #this should be redone to indclude different initial states for different moths     
+        kf = KalmanFilterLinear(state_transition, control_matrix, observation_matrix, initial_state, initial_probability, process_covariance, measurement_covariance)
+        for j in range(1,len(list_dict["moth_trajectory_list{0}".format(i)])):
+            #This is where I should implement a condition for j==0
+            x = list_dict["moth_trajectory_list{0}".format(i)][j][0]
+            y = list_dict["moth_trajectory_list{0}".format(i)][j][1]
+            x_minus_1 =list_dict["moth_trajectory_list{0}".format(i)][j-1][0]
+            y_minus_1 =list_dict["moth_trajectory_list{0}".format(i)][j-1][1]
+            vx = (x - x_minus_1)/dt
+            vy = (y - y_minus_1)/dt
+            kx = (kf.GetCurrentState()[0,0])
+            ky = (kf.GetCurrentState()[2,0])
+            kf.Step(control_vector,np.matrix([[x],[vx],[y],[vy]]))
+            kalman_dict["Kalman_list{0}".format(i)].append((kx,ky))
+            
+    #graphics:       
     #create a matrix, insert all colored trajectories
     im = 1*np.ones((500,500,3))
     color_list =[(1,0,0),(0,1,0),(0,0,1)]
@@ -129,16 +186,19 @@ def moth_demo(x_start = 450, y_start = 310, dt=0.01, t_max = 5, draw_iter_interv
     for i in range(num_it):
         for tup in diff_dict["diff_list{0}".format(i)]:
             im[tup[0]][tup[1]] = color_list[i%len(color_list)]
+            #add colored markers for events on the graph
             if tup[3] == 'odor found':
-                circle(im,tup[1],tup[0])
+                circle(im,tup[1],tup[0]) # red circle for finding odor
             if tup[3] == 'odor lost':
-                circle(im,tup[1],tup[0],5,(0,0,1))
+                circle(im,tup[1],tup[0],5,(0,0,1))#blue circle for losing odor
             if tup[4] == True:
-                square(im,tup[1],tup[0])
+                square(im,tup[1],tup[0])#green square for a sharp angle (timer runout)
+    for i in range(num_it):
+        for tup in kalman_dict["Kalman_list{0}".format(i)]:
+            im[tup[0]][tup[1]] = (0.5,0.5,0.5)
 
     #draw the odor source as a big red circle
-    circle(im,250,25,15)
-    
+    circle(im,250,25,15)    
     fig, time_text = _set_up_figure('Concentration field array demo')
     # display initial concentration field as plot
     im_extents = (sim_region.x_min, sim_region.x_max,
