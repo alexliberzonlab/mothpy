@@ -52,7 +52,7 @@ class KalmanFilterLinear:
 
 
     
-def moth_demo(x_start = 450, y_start = 345, dt=0.01, t_max = 10, draw_iter_interval=1):
+def moth_demo(x_start = 450, y_start = 330, dt=0.01, t_max = 6, draw_iter_interval=1):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
@@ -65,11 +65,11 @@ def moth_demo(x_start = 450, y_start = 345, dt=0.01, t_max = 10, draw_iter_inter
     array_dict = {}
     times_list = [] # a list of the time it took different moths to reach the goal, for hist purposes
     del_list = [] # a list of the moth indices that finished the track and were deleted 
-
-    num_it=1 #number of iterations
-    dist_it=100 #distance on y axis between starting points on different iterations
-    for i in range(num_it):
-        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start-i*dist_it)
+    num_it = 4
+    dist_it= 15 #distance on y axis between starting points on different iterations
+    for i in range(num_it): 
+        #moth dict has four different moths 
+        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start - dist_it*i ,3,i+1)#nav =1,2,3,4
         list_dict["moth_trajectory_list{0}".format(i)] = []
         array_dict["trajectory_array{0}".format(i)] = np.zeros((500,500))
         
@@ -154,9 +154,9 @@ def moth_demo(x_start = 450, y_start = 345, dt=0.01, t_max = 10, draw_iter_inter
     control_vector = np.matrix([[0],[0],[0],[0]])
     observation_matrix = np.eye(4)
     initial_probability = np.eye(4)
-    process_covariance =0.0001*np.eye(4) #A crucial factor in this process
-    measurement_covariance = np.eye(4)*0.1
-    
+    process_covariance =0*np.eye(4) #A crucial factor in this process
+    measurement_covariance = np.eye(4)*0.01
+    """kalman stuff
     #a dictionary of lists of the kalman corrections - (x,y) only.
     kalman_dict = {}
     #for each list in the list dictionary we will create a new kalman list 
@@ -177,11 +177,11 @@ def moth_demo(x_start = 450, y_start = 345, dt=0.01, t_max = 10, draw_iter_inter
             ky = (kf.GetCurrentState()[2,0])
             kf.Step(control_vector,np.matrix([[x],[vx],[y],[vy]]))
             kalman_dict["Kalman_list{0}".format(i)].append((kx,ky))
-            
+    """       
     #graphics:       
     #create a matrix, insert all colored trajectories
     im = 1*np.ones((500,500,3))
-    color_list =[(1,0,0),(0,1,0),(0,0,1)]
+    color_list =[(1,0,0),(0,1,0),(0,0,1),(1,1,0)]
     #draw in the trajectories in different colors
     for i in range(num_it):
         for tup in diff_dict["diff_list{0}".format(i)]:
@@ -190,12 +190,14 @@ def moth_demo(x_start = 450, y_start = 345, dt=0.01, t_max = 10, draw_iter_inter
             if tup[3] == 'odor found':
                 circle(im,tup[1],tup[0]) # red circle for finding odor
             if tup[3] == 'odor lost':
-                circle(im,tup[1],tup[0],5,(0,0,1))#blue circle for losing odor
+                circle(im,tup[1],tup[0],3,(0,0,1))#blue circle for losing odor
             if tup[4] == True:
                 square(im,tup[1],tup[0])#green square for a sharp angle (timer runout)
+    """ kalman stuff
     for i in range(num_it):
         for tup in kalman_dict["Kalman_list{0}".format(i)]:
             im[tup[0]][tup[1]] = (0.5,0.5,0.5)
+    """
 
     #draw the odor source as a big red circle
     circle(im,250,25,15)    

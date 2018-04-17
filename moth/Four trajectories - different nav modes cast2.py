@@ -52,7 +52,7 @@ class KalmanFilterLinear:
 
 
     
-def moth_demo(x_start = 450, y_start = 350, dt=0.01, t_max = 4, draw_iter_interval=1):
+def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interval=1):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
@@ -66,10 +66,10 @@ def moth_demo(x_start = 450, y_start = 350, dt=0.01, t_max = 4, draw_iter_interv
     times_list = [] # a list of the time it took different moths to reach the goal, for hist purposes
     del_list = [] # a list of the moth indices that finished the track and were deleted 
     num_it = 4
-    dist_it= 30 #distance on y axis between starting points on different iterations
+    dist_it= 10 #distance on y axis between starting points on different iterations
     for i in range(num_it): 
         #moth dict has four different moths 
-        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start - dist_it, y_start - dist_it ,i+1)#nav =1,2,3,4
+        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start - dist_it*i ,i+1)#nav =1,2,3,4
         list_dict["moth_trajectory_list{0}".format(i)] = []
         array_dict["trajectory_array{0}".format(i)] = np.zeros((500,500))
         
