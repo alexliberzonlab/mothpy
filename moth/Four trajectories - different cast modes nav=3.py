@@ -216,7 +216,7 @@ def moth_demo(x_start = 450, y_start = 330, dt=0.01, t_max = 6, draw_iter_interv
     #save plot as image
     scipy.misc.imsave('simulation of ' + str(num_it)+' moths' +'.jpg', im)
     
-    print "done"
+    print("done")
 
 moth_demo()
 

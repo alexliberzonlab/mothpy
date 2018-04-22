@@ -301,5 +301,5 @@ class ConcentrationArrayGenerator(object):
         """
         conc_arrays = []
         for puff_array in puff_arrays:
-            conc_arrays.append(self.generate_single_frame(puff_array))
+            conc_arrays.append(self.generate_single_array(puff_array))
         return conc_arrays
