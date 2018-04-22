@@ -2,6 +2,10 @@
 """
 Demonstrations of how to set up models with graphical displays produced using
 matplotlib functions.
+This is a competition file in which we use different inputs to observe a comparative
+flights of different navigation or casting types. see documentation below for the 
+details
+
 """
 
 from __future__ import division
@@ -49,13 +53,23 @@ class KalmanFilterLinear:
     # eye(n) = nxn identity matrix.
     self.current_prob_estimate = (np.eye(size)-kalman_gain*self.H)*predicted_prob_estimate
 
-
-
     
-def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interval=1):
+def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, \
+                            draw_iter_interval=1, nav_types=[3],cast_types=[2]):
     """
-    a copy of the concetration_array_demo with the moth actions integrated
+
+    Arguments:
+        x_start, y_start : floats, define x,y of the navigator at t=0, (meters?), e.g.
+                            450, 335 meters
+        dt : time step of the simulation, default = 0.01
+        t_max : maximum time of the simulation, default = 7
+        draw_iter_interval : default = 1, update figures every so steps
+        nav_types : list of navigation types, default = [3], of the length = len(cast_types)
+        cast_types : list of cast types, default = [2], length of a list = len(nav_types)    
     """
+    if (len(nav_types) != len(cast_types)):
+        raise ValueError("nav_types and cast_types should be of the same length")
+    
     # define simulation region
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 2., 1.)
@@ -65,11 +79,11 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
     array_dict = {}
     times_list = [] # a list of the time it took different moths to reach the goal, for hist purposes
     del_list = [] # a list of the moth indices that finished the track and were deleted 
-    num_it = 4
     dist_it= 10 #distance on y axis between starting points on different iterations
-    for i in range(num_it): 
+    for i in range(len(nav_types)): 
         #moth dict has four different moths 
-        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x=x_start, y=y_start - dist_it*i ,nav_type=i+1)#nav =1,2,3,4
+        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x=x_start, 
+                    y=y_start - dist_it*i ,nav_type=nav_types[i],cast_type=cast_types[i])#nav =1,2,3,4
         list_dict["moth_trajectory_list{0}".format(i)] = []
         array_dict["trajectory_array{0}".format(i)] = np.zeros((500,500))
         
@@ -86,8 +100,8 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
                                                        500, 1.)
     # display initial concentration field as image
     conc_array = array_gen.generate_single_array(plume_model.puff_array)
-    #set up text file to recored the trajectory as a string of tuples
-    file_name = "moth_trajectory" + "(" + str(x_start) + "," + str(y_start) + ")"
+    # set up text file to recored the trajectory as a string of tuples
+    # file_name = "moth_trajectory" + "(" + str(x_start) + "," + str(y_start) + ")"
     
     # define update and draw functions
     def update_func(dt, t):
@@ -95,14 +109,14 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
         plume_model.update(dt)
         conc_array = array_gen.generate_single_array(plume_model.puff_array)
         #update each individual moth
-        for i in range(num_it):
+        for i in range(len(nav_types)):
             if i not in del_list:
                 vel_at_pos = wind_model.velocity_at_pos(moth_dict["moth{0}".format(i)].x,moth_dict["moth{0}".format(i)].y)
                 moth_dict["moth{0}".format(i)].update(conc_array,vel_at_pos,0.01)
 
     #each of the moth lists appends the new position given by it's corresponding moth
     def draw_func():
-        for i in range(num_it):
+        for i in range(len(nav_types)):
             if i not in del_list:
                 moth_i = moth_dict["moth{0}".format(i)]
                 (x,y,T,odor,gamma,state) = (moth_i.x, moth_i.y, moth_i.T, moth_i.odor, moth_i.gamma, moth_i.state)
@@ -124,11 +138,11 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
     diff_dict ={}
     #this shamefuly large tree transcribes the lists to the lists accounting for the moments of finding and losing odor
     #as well as counting when and where the moth decided to turn.
-    for i in range(num_it):
+    for i in range(len(nav_types)):
         currentlist = list_dict["moth_trajectory_list{0}".format(i)]
         diff_list = []
         for j in range(len(currentlist)):
-                (x,y,T,odor,gamma,state) = currentlist[j] #odor and gamma will be rewritten
+                (x,y,T,odor,_,_) = currentlist[j] #odor and gamma will be rewritten
                 if j < 1: #first object on the list, nothing happens
                     odor = None
                     turning = False
@@ -149,13 +163,13 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
 
 
     #implement the Kalman filter:
-    state_transition = np.matrix([[1,dt,0,0],[0,1,0,0],[0,0,1,dt],[0,0,0,1]])
-    control_matrix = np.matrix([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
-    control_vector = np.matrix([[0],[0],[0],[0]])
-    observation_matrix = np.eye(4)
-    initial_probability = np.eye(4)
-    process_covariance =0*np.eye(4) #A crucial factor in this process
-    measurement_covariance = np.eye(4)*0.01
+    # state_transition = np.matrix([[1,dt,0,0],[0,1,0,0],[0,0,1,dt],[0,0,0,1]])
+    # control_matrix = np.matrix([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
+    # control_vector = np.matrix([[0],[0],[0],[0]])
+    # observation_matrix = np.eye(4)
+    # initial_probability = np.eye(4)
+    # process_covariance =0*np.eye(4) #A crucial factor in this process
+    # measurement_covariance = np.eye(4)*0.01
     """kalman stuff
     #a dictionary of lists of the kalman corrections - (x,y) only.
     kalman_dict = {}
@@ -183,7 +197,7 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
     im = 1*np.ones((500,500,3))
     color_list =[(1,0,0),(0,1,0),(0,0,1),(1,1,0)]
     #draw in the trajectories in different colors
-    for i in range(num_it):
+    for i in range(len(nav_types)):
         for tup in diff_dict["diff_list{0}".format(i)]:
             im[tup[0]][tup[1]] = color_list[i%len(color_list)]
             #add colored markers for events on the graph
@@ -201,26 +215,34 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
 
     #draw the odor source as a big red circle
     circle(im,250,25,15)    
-    fig, time_text = _set_up_figure('Concentration field array demo')
+    _set_up_figure('Concentration field array demo')
     # display initial concentration field as plot
     im_extents = (sim_region.x_min, sim_region.x_max,
                   sim_region.y_min, sim_region.y_max)
     conc_im = plt.imshow(conc_array.T, extent=im_extents)
-    conc_im.axes.set_xlabel('x / m')
-    conc_im.axes.set_ylabel('y / m')
+    conc_im.axes.set_xlabel(r'$x$ (m)')
+    conc_im.axes.set_ylabel(r'$y$ (m)')
 
     conc_im.set_data(im)
     plt.imshow(im)
     plt.show()
 
     #save plot
-    plt.savefig('simulation of ' + str(num_it)+' moths' +'.jpg')
+    plt.savefig('simulation of ' + str(len(nav_types))+' moths' +'.jpg')
     
     print("done")
 
 # to run this as a script from the command shell:
 
 if (__name__ == "__main__"):
-    moth_demo()
+    # change the parameters, run the demo
+    # everything is stated explicitly
+    # competition 1: four different navigation types
+    moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, \
+        draw_iter_interval=1, nav_types=[1,2,3,4],cast_types=[2,2,2,2])
+
+    # competition 2: three different navigation types
+    moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, \
+        draw_iter_interval=1, nav_types=[3,3,3,3],cast_types=[1,2,3,4])
 
 
