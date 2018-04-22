@@ -55,7 +55,7 @@ class KalmanFilterLinear:
 
     
 def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, \
-                            draw_iter_interval=1, nav_types=[3],cast_types=[2]):
+                            draw_iter_interval=1, nav_types=[3],cast_types=[2],fig_name=None):
     """
 
     Arguments:
@@ -228,7 +228,9 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, \
     plt.show()
 
     #save plot
-    plt.savefig('simulation of ' + str(len(nav_types))+' moths' +'.jpg')
+    if fig_name is None:
+        fig_name = 'simulation of ' + str(len(nav_types))+' moths' +'.jpg'
+    plt.savefig(fig_name)
     
     print("done")
 
@@ -238,11 +240,13 @@ if (__name__ == "__main__"):
     # change the parameters, run the demo
     # everything is stated explicitly
     # competition 1: four different navigation types
-    moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, \
-        draw_iter_interval=1, nav_types=[1,2,3,4],cast_types=[2,2,2,2])
+    params = [dict(x_start = 450, y_start = 335, dt=0.01, t_max = 5, \
+        draw_iter_interval=1, nav_types=[1,2,3,4],cast_types=[2,2,2,2],fig_name='competition1.png'),
+        dict(x_start = 450, y_start = 335, dt=0.01, t_max = 5, \
+        draw_iter_interval=1, nav_types=[3,3,3,3],cast_types=[1,2,3,4],fig_name='competition2.png')]
 
-    # competition 2: three different navigation types
-    moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, \
-        draw_iter_interval=1, nav_types=[3,3,3,3],cast_types=[1,2,3,4])
+    # all cases:
+    for p in params:
+        moth_demo(**p)
 
 
