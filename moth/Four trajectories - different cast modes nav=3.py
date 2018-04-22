@@ -214,10 +214,14 @@ def moth_demo(x_start = 450, y_start = 330, dt=0.01, t_max = 6, draw_iter_interv
     plt.show()
 
     #save plot as image
-    scipy.misc.imsave('simulation of ' + str(num_it)+' moths' +'.jpg', im)
+    plt.savefig('simulation of ' + str(num_it)+' moths' +'.jpg')
     
-    print("done")
+    print("done") # new format, print is a function
 
-moth_demo()
+# to run it as a script from a shell:
+# python Four trajectories - different cast modes nav=3.py    
+# better to use names without spaces
+if (__name__ == "__main__"):
+    moth_demo()
 
 
