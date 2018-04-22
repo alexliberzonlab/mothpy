@@ -550,14 +550,31 @@ class ColouredNoiseGenerator(object):
 
 
 class moth_modular(object):
+    """
+    Moves within the field, tracking plume and wind data and navigating accordingly. 
+    In this early design it is not affected by wind velocity, and can move freely.
+    parameters:
+    x : float
+       Posistion at x
+    y : float
+       Position at y
+    u : float
+       Velocity on x axis
+    v : on y axis
+       Velocity on y axis
+    beta : float
+       Angle of attack
+    Duration : float
+       Time travled without odor until the moth changes direction
+    """
     def __init__(self,sim_region,x,y,nav_type = 3, cast_type = 2, wait_type = 1, beta=45,duration =0.2, speed = 200.0):
         self.x = x
         self.y = y
-        self.u = 0
-        self.v = 0
+        self.u = 0.0
+        self.v = 0.0
         
         self.sim_region = sim_region
-        self.speed = speed
+        self.speed = speed # units?
         
         #movement booleans and angles
         self.searching = False
@@ -587,23 +604,7 @@ class moth_modular(object):
         self.base_conc = 20000
 
         
-    """
-    Moves within the field, tracking plume and wind data and navigating accordingly. 
-    In this early design it is not affected by wind velocity, and can move freely.
-    parameters:
-    x : float
-       Posistion at x
-    y : float
-       Position at y
-    u : float
-       Velocity on x axis
-    v : on y axis
-       Velocity on y axis
-    beta : float
-       Angle of attack
-    Duration : float
-       Time travled without odor until the moth changes direction
-    """
+
     def update_duration(self):
         #used in navigation modes three and four
         if self.T%0.1:

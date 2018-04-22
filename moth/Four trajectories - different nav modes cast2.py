@@ -69,7 +69,7 @@ def moth_demo(x_start = 450, y_start = 335, dt=0.01, t_max = 7, draw_iter_interv
     dist_it= 10 #distance on y axis between starting points on different iterations
     for i in range(num_it): 
         #moth dict has four different moths 
-        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start - dist_it*i ,i+1)#nav =1,2,3,4
+        moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x=x_start, y=y_start - dist_it*i ,nav_type=i+1)#nav =1,2,3,4
         list_dict["moth_trajectory_list{0}".format(i)] = []
         array_dict["trajectory_array{0}".format(i)] = np.zeros((500,500))
         
