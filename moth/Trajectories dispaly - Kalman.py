@@ -66,7 +66,7 @@ def accelration_constraint(ax,ay,a_max):
 
 
     
-def moth_demo(x_start = 450, y_start = 320, dt=0.01, t_max = 5, draw_iter_interval=1):
+def moth_demo(x_start = 450, y_start = 320, dt=0.01, t_max = 7, draw_iter_interval=1):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
