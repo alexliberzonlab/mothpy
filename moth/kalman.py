@@ -66,13 +66,12 @@ def accelration_constraint(ax,ay,a_max):
     
 def kalman_filter(diff_dict):
     #implement the Kalman filter:
-
     #first we calculate dt from the list
     #(it's ugly but it's cleaner than taking it with the input)
     dt=diff_dict["diff_list0"][1][2] - diff_dict["diff_list0"][0][2]
     num_it = len(diff_dict)
 
-    #define the required matrices
+    #define the matrices
     state_transition = np.matrix([[1,dt,0,0],[0,1,0,0],[0,0,1,dt],[0,0,0,1]])
     control_matrix = np.matrix([[(dt**2)/2,0],[0,(dt**2)/2],[dt,0],[0,dt]]) # acceleration constraint
     a_max = 0.01 
@@ -88,9 +87,9 @@ def kalman_filter(diff_dict):
     for i in range(num_it):
         kalman_dict["Kalman_list{0}".format(i)] = []   
         #initiate Kalman filter with our specific parameters
-        initial_state = np.matrix([[diff_dict["diff_list{0}".format(i)][0][0]],[0],diff_dict["diff_list{0}".format(i)][0][1],[0]])#initiate for x start and y start     
+        initial_state = np.matrix([[diff_dict["diff_list{0}".format(i)][0][0]],[0],[diff_dict["diff_list{0}".format(i)][0][1]],[0]])#initiate for x start and y start 
         kf = KalmanFilterLinear(state_transition, control_matrix, observation_matrix, initial_state, initial_probability, process_covariance, measurement_covariance)
-        vx,vy =0,0 #initial velocities
+        vx,vy =0,0 #initial velocities are 
         for j in range(1,len(diff_dict["diff_list{0}".format(i)])):
             #There is no iteration for when j==0
             x = diff_dict["diff_list{0}".format(i)][j][0]
@@ -102,12 +101,13 @@ def kalman_filter(diff_dict):
             vx = (x - x_minus_1)/dt
             vy = (y - y_minus_1)/dt
             kx = (kf.GetCurrentState()[0,0])
-            ky = (kf.GetCurrentState()[0,1]) #ky = (kf.GetCurrentState()[2,0])
-
+            ky = (kf.GetCurrentState()[2,0])
             #apply the accelaration constraint
             ax=(vx-vx_minus_1)/dt
             ay=(vy-vy_minus_1)/dt
             control_vector = accelration_constraint(ax,ay,a_max)
             kf.Step(control_vector,np.matrix([[x],[vx],[y],[vy]]))
             kalman_dict["Kalman_list{0}".format(i)].append((kx,ky))
+
+
     return kalman_dict
