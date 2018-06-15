@@ -19,7 +19,8 @@ concentration fields spread in turbulent flows
 
 ``` 
 
-to be updated
-
+python compare\ navigators\ in\ different\ wind\ conditions.py
 
 ```
+
+![Demo flight](moth/cast type carde1; char_time = 3.5; amp = 0.0.png)
