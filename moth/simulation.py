@@ -51,7 +51,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude
 
         
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21., 11.,1,char_time,amplitude)
+    wind_model = models.WindModel(wind_region, 21, 11,1,char_time,amplitude)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
                                     centre_rel_diff_scale=1.5,
