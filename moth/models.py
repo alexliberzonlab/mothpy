@@ -11,6 +11,7 @@ __license__ = 'MIT'
 import numpy as np
 import scipy.interpolate as interp
 import random
+from Carde_navigator import carde1,carde2
 
 class Puff(object):
     """
@@ -285,7 +286,7 @@ class WindModel(object):
     interpolated over the edges.
     """
 
-    def __init__(self, sim_region, nx=15, ny=15, u_av=1., v_av=0., Kx=2.,
+    def __init__(self, sim_region, nx=15, ny=15, u_av=1.,char_time = 3.5,amplitude = 0.1, v_av=0., Kx=2.,
                  Ky=2., noise_gain=0., noise_damp=0.2, noise_bandwidth=0.2, #noise_gain=5 change to 0
                  noise_rand=np.random):
         """
@@ -350,9 +351,12 @@ class WindModel(object):
         # need to generate coloured noise samples at four corners of boundary
         # for both components of the wind velocity field so (2,8) state
         # vector (2 as state includes first derivative)
-        self.noise_gen = ColouredNoiseGenerator(np.zeros((2, 8)), noise_damp,
+        self.char_time = char_time
+        self.amplitude = amplitude
+        self.noise_gen = MeanderingGenerator(np.zeros((2, 8)), noise_damp,
                                                 noise_bandwidth, noise_gain,
-                                                noise_rand)
+                                                noise_rand,self.char_time,self.amplitude)
+        
         # preassign array of corner means values
         self._corner_means = np.array([u_av, v_av]).repeat(4)
         # precompute linear ramp arrays with size of boundary edges for
@@ -545,11 +549,80 @@ class ColouredNoiseGenerator(object):
         dx_dt = self._A.dot(self._x) + self._B * u
         # apply update with Euler integration
         self._x += dx_dt * dt
+
+
+class MeanderingGenerator(object):
+
+    """
+    Generates a sine noise output via Euler integration of a state space
+    system formulation.
+    """
+
+    def __init__(self, init_state, damping, bandwidth, gain,
+                 prng=np.random,char_time = 3.5,amplitude = 0.1):
+
+        self.T =0
+        self.char_time = char_time #cycle time for wind
+        self.amplitude = amplitude
         
+    @property
+    def output(self):
+        """Coloured noise output."""
+        return self._x[0, :]
+
+    def update(self, dt):
+        """Updates state of noise generator."""
+        sin_noise = self.amplitude*np.sin (3.14/self.char_time*self.T)
+        self._x = np.zeros((2,8))
+        self._x[0,4:]= sin_noise
+        self.T+=dt #timestep
+
+
+
 
 
 
 class moth_modular(object):
+    def __init__(self,sim_region,x,y,nav_type = 3, cast_type = 'carde2', wait_type = 2, beta=45,duration =0.2, speed = 200.0):
+        self.x = x
+        self.y = y
+        self.u = 0
+        self.v = 0
+        
+        self.sim_region = sim_region
+        self.speed = speed
+        
+        #movement booleans and angles
+        self.searching = False
+        self.turned_on = False 
+        #beta = navigating angle
+        self.base_beta = (-1)**random.getrandbits(1)*np.radians(beta)
+        self.beta = self.base_beta
+        #gamma = casting angle
+        self.base_gamma = np.radians(90)
+        self.gamma = (-1)**random.getrandbits(1)*self.base_gamma
+
+        self.sweep_counter = 0 # counts the number of turns for big sweep cast modes
+
+        
+        #movement types
+        self.nav_type = nav_type
+        self.cast_type = cast_type    
+        self.wait_type = wait_type
+        self.state = 'wait' # or 'nav' or 'cast'
+        
+        #time coefficients
+        self.base_duration = duration
+        self.duration = duration
+        self.T = 0
+        self.lamda = 0.2
+        
+        #odor coefficients
+        self.threshold = 4000
+        self.conc_max = 1
+        self.base_conc = 20000
+        self.odor = False
+        
     """
     Moves within the field, tracking plume and wind data and navigating accordingly. 
     In this early design it is not affected by wind velocity, and can move freely.
@@ -567,46 +640,9 @@ class moth_modular(object):
     Duration : float
        Time travled without odor until the moth changes direction
     """
-    def __init__(self,sim_region,x,y,nav_type = 3, cast_type = 2, wait_type = 1, beta=45,duration =0.2, speed = 200.0):
-        self.x = x
-        self.y = y
-        self.u = 0.0
-        self.v = 0.0
-        
-        self.sim_region = sim_region
-        self.speed = speed # units?
-        
-        #movement booleans and angles
-        self.searching = False
-        self.turned_on = False
-        #beta = navigating angle
-        self.base_beta = (-1)**random.getrandbits(1)*np.radians(beta)
-        self.beta = self.base_beta
-        #gamma = casting angle
-        self.base_gamma = np.radians(90)
-        self.gamma = self.base_gamma
-        
-        #movement types
-        self.nav_type = nav_type
-        self.cast_type = cast_type    
-        self.wait_type = wait_type
-        self.state = 'wait' # or 'nav' or 'cast'
-        
-        #time coefficients
-        self.base_duration = duration
-        self.duration = duration
-        self.T = 0
-        self.lamda = 0.2
-        
-        #odor coefficients
-        self.threshold = 1500
-        self.conc_max = 1
-        self.base_conc = 20000
-
-        
-
     def update_duration(self):
         #used in navigation modes three and four
+        # I DONT UNDERSTAND WHAT IS GOING ON HERE
         if self.T%0.1:
             self.duration = self.base_duration*min(1,self.base_conc/self.conc_max)
         
@@ -627,6 +663,7 @@ class moth_modular(object):
         #the sign of beta is always the same as the sign of gamma
         self.beta = np.sign(self.gamma)*np.abs(self.beta)
         #Input self.gamma,self.beta
+        self.sweep_counter +=1
     
     def is_smelling(self,conc_array):
         """
@@ -636,7 +673,7 @@ class moth_modular(object):
         will still act as if it is smelling it for time lamba.
 
         Input - conc_array, self.T, self.lamda
-        output - returns true or false, changes self.Tfirst
+        output - true or false, changes self.Tfirst
         """
         if conc_array[self.x][self.y]>self.threshold:
             self.smell_timer = self.Timer(self.T,self.lamda)
@@ -671,7 +708,7 @@ class moth_modular(object):
 
     def cast2(self,wind_vel_at_pos):
             #similar to nav_type 3
-            #set timer as soon as moth isn't smelling odur, turn as soon as timer is over
+            #set timer as soon as moth isn't smelling odor, turn as soon as timer is over
             #duration grows every time timer is used
             if not self.searching:
                 #start timer
@@ -750,6 +787,14 @@ class moth_modular(object):
             self.update_duration()
             self.cast2(wind_vel_at_pos)
 
+        if self.cast_type == 'carde1':
+            carde1(self,wind_vel_at_pos)
+            
+        if self.cast_type == 'carde2':
+            carde2(self,wind_vel_at_pos)
+            
+            
+
 
     def wait(self,wind_vel_at_pos):
         if self.wait_type == 1:
@@ -759,16 +804,19 @@ class moth_modular(object):
         if self.wait_type == 2:
             #coin toss between choosing to move left or right
             #wind angle, constant ground speed
+            #similar to nav_type 3
+            #set timer as soon as moth isn't smelling odor, turn as soon as timer is over
+            #duration grows every time timer is used                  
             self.calculate_wind_angle(wind_vel_at_pos)
-            if self.going_right == 1:
-                self.u = -self.speed*np.cos(np.radians(90) + self.wind_angle)
-                self.v = self.speed*np.sin(np.radians(90) + self.wind_angle)
-            else:
-                self.u = -self.speed*np.cos(-np.radians(90) + self.wind_angle)
-                self.v = self.speed*np.sin(-np.radians(90) + self.wind_angle)
+            self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
+            self.v = self.speed*np.sin(self.gamma+self.wind_angle)
+        
             
-                             
-    def update(self,conc_array,wind_vel_at_pos,dt):        
+                                     
+    def update(self,conc_array,wind_vel_at_pos,dt):
+        if self.T == 0: #because we want to start by casting
+            self.smell_timer = self.Timer(self.T,0.01)#start timer just not to bug out things later
+            self.Tfirst = 0
         if self.is_smelling(conc_array):
             self.navigate(wind_vel_at_pos)
             self.state = 'nav' #this has no use within the model, only for trajoctiry diaplay -kalman
@@ -780,6 +828,7 @@ class moth_modular(object):
             self.state = 'wait'
         self.x += self.u*dt
         self.y += self.v*dt
+        #print self.T #delete later!
         self.T += dt
         
     def moth_array(self, conc_array, wind_vel_at_pos):
