@@ -675,7 +675,7 @@ class moth_modular(object):
         Input - conc_array, self.T, self.lamda
         output - true or false, changes self.Tfirst
         """
-        if conc_array[self.x][self.y]>self.threshold:
+        if conc_array[int(self.x)][int(self.y)]>self.threshold:
             self.smell_timer = self.Timer(self.T,self.lamda)
             #Nav mode three and four need to know whether the moth is smelling
             #at a specific moment, for that reason they use Tfirst.
