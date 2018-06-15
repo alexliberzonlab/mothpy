@@ -7,7 +7,7 @@ from moth_graphics import plot
 from statistics import calc_stats
 
 
-num_it = 10#number of iterations
+num_it = 10 #number of iterations
 (diff_dict1,diff_dict2,diff_dict3,diff_dict4) = moth_simulation(num_it,1)
 
 
