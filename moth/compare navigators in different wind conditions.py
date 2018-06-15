@@ -15,10 +15,10 @@ plots a single plot for each one
 
 """
 
-
-for i in range(10):
-    job_file = 'job'+ str(i)+ '.json'
-    data_file = 'data'+ str(i)+ '.json'
-    generate_job(3.5,0.1*i,job_file) #the amplitude of wind noise (sine) grows with each iteration
-    create_trajectory_data(job_file,data_file)
-    save_plot(job_file,data_file)
+if __name__ == "__main__":
+    for i in range(10):
+        job_file = 'job'+ str(i)+ '.json'
+        data_file = 'data'+ str(i)+ '.json'
+        generate_job(3.5,0.1*i,job_file) #the amplitude of wind noise (sine) grows with each iteration
+        create_trajectory_data(job_file,data_file)
+        save_plot(job_file,data_file)
