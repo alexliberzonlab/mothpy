@@ -68,7 +68,7 @@ def kalman_filter(diff_dict):
     #implement the Kalman filter:
     #first we calculate dt from the list
     #(it's ugly but it's cleaner than taking it with the input)
-    dt=diff_dict["diff_list0"][1][2] - diff_dict["diff_list0"][0][2]
+    dt=diff_dict["diff_list{0}".format(0)][1][2] - diff_dict["diff_list{0}".format(0)][0][2]
     num_it = len(diff_dict)
 
     #define the matrices
@@ -109,5 +109,5 @@ def kalman_filter(diff_dict):
             kf.Step(control_vector,np.matrix([[x],[vx],[y],[vy]]))
             kalman_dict["Kalman_list{0}".format(i)].append((kx,ky))
 
-
+    #print kalman_dict
     return kalman_dict
