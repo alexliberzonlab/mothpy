@@ -22,7 +22,7 @@ from demos import _close_handle,_set_up_figure,_simulation_loop
 
 
   
-def moth_simulation(num_it=10,nav_type = 3, cast_type = 2, wait_type = 1 ,x_start = 450, y_start = 320, dt=0.01, t_max = 6, draw_iter_interval=1):
+def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude = 0.1 , nav_type = 3, cast_type = 2, wait_type = 1,  dt=0.01, draw_iter_interval=1):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
@@ -42,18 +42,19 @@ def moth_simulation(num_it=10,nav_type = 3, cast_type = 2, wait_type = 1 ,x_star
     for i in range(4*num_it):
         list_dict["moth_trajectory_list{0}".format(i)] = []
         if i<num_it:
-            moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start,nav_type , 1, wait_type)
+            moth_dict["moth{0}".format(i)] = navigators[0]
         elif i<2*num_it:
-            moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start,nav_type , 2, wait_type)
+            moth_dict["moth{0}".format(i)] = navigators[1]
         elif i<3*num_it:
-            moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start,nav_type , 3, wait_type)
+            moth_dict["moth{0}".format(i)] = navigators[2]
         else:
-            moth_dict["moth{0}".format(i)] = models.moth_modular(sim_region, x_start, y_start,nav_type , 4, wait_type)
-    
+            moth_dict["moth{0}".format(i)] = navigators[3]
+            
+        #moth_dict["moth{0}".format(i)].y = moth_dict["moth{0}".format(i)].y - i%num_it*dist_it   
         
         
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
+    wind_model = models.WindModel(wind_region, 21., 11.,0, 1.,char_time,amplitude)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
                                     centre_rel_diff_scale=1.5,
@@ -68,14 +69,25 @@ def moth_simulation(num_it=10,nav_type = 3, cast_type = 2, wait_type = 1 ,x_star
     
     # define update and draw functions
     def update_func(dt, t):
+        
         wind_model.update(dt)
         plume_model.update(dt)
         conc_array = array_gen.generate_single_array(plume_model.puff_array)
         #update each individual moth
         for i in range(4*num_it):
             if i not in del_list:
+                moth_i = moth_dict["moth{0}".format(i)]
                 vel_at_pos = wind_model.velocity_at_pos(moth_dict["moth{0}".format(i)].x,moth_dict["moth{0}".format(i)].y)
-                moth_dict["moth{0}".format(i)].update(conc_array,vel_at_pos,0.01)
+                moth_i.update(conc_array,vel_at_pos,0.01)
+                if moth_i.x<0:
+                    moth_i.x = 499 - moth_i.x
+                if moth_i.x>499:
+                    moth_i.x = moth_i.x - 499
+                if moth_i.y<0:
+                    moth_i.y = 499 - moth_i.y
+                if moth_i.y>499:
+                    moth_i.y = moth_i.y - 499
+
 
     #each of the moth lists appends the new position given by it's corresponding moth
     def draw_func():
@@ -95,9 +107,6 @@ def moth_simulation(num_it=10,nav_type = 3, cast_type = 2, wait_type = 1 ,x_star
                         times_list4.append(T)
                         
                     del moth_dict["moth{0}".format(i)]
-                    del_list.append(i)
-                if x<0 or x>499 or y<0 or y>499:    #if moth out of bounds delete moth
-                    del moth_dict["moth{0}".format(i)] 
                     del_list.append(i)
             
     # start simulation loop
@@ -135,7 +144,7 @@ def moth_simulation(num_it=10,nav_type = 3, cast_type = 2, wait_type = 1 ,x_star
                 diff_list.append((x,y,T,odor,turning))
         diff_dict["diff_list{0}".format(i)] = diff_list
 
-    #experimentla part
+    #break off the dictionary into four different dictionaries, each containing the record of a single navigator
     diff_dict1,diff_dict2,diff_dict3,diff_dict4 = {},{},{},{}
     for i in range(4*num_it):
         if i<num_it:
@@ -148,17 +157,7 @@ def moth_simulation(num_it=10,nav_type = 3, cast_type = 2, wait_type = 1 ,x_star
             diff_dict4["diff_list{0}".format(i)] = diff_dict["diff_list{0}".format(i)]
 
 
-
-    #documantation:
-    #set up text file to recored different lists
-    file_name = "moth_trajectory" + "(" + str(x_start) + "," + str(y_start) + ")"
-    file = open(file_name + ".txt", 'w')
-    for i in range(4*num_it):
-        file.write("moth trajectory " + str(i))
-        file.write(str(diff_dict["diff_list{0}".format(i)])) 
-    file.close()
-
-    #to keep the code compact, diff_dict also carries time_list for further histogram use
+    # time_list for further histogram use
     diff_dict1["times_list"]=times_list1
     diff_dict2["times_list"]=times_list2
     diff_dict3["times_list"]=times_list3
