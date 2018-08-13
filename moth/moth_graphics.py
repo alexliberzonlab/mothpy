@@ -15,24 +15,33 @@ from shapes import circle,square , cx ,cy
 def plot(kalman_dict, title = 'single navigator in flight'):
     num_it = len(kalman_dict)
     #alternative graphic function - shows only kalman trajectories
-    color_wheel =['-b','-g','-c','-m','-y','-k']
+    color_wheel =['-b','-r']
     for i in range(num_it): #present the different kalman trajectories
-        #print kalman_dict["Kalman_list{0}".format(i)]
+        slice_list = [] #a list of indexes 
         kzip = zip(*kalman_dict["Kalman_list{0}".format(i)])
         kx,ky=kzip[0],kzip[1]
-        pylab.plot(kx,ky,color_wheel[i%6]) #choose a color from the color wheel for each trajectory
         for tup in kalman_dict["Kalman_list{0}".format(i)]:
-            if tup[3] == 'odor found':
-                mark = circle(tup[1],tup[0])
-                pylab.plot(mark[0],mark[1],'-r')
-            elif tup[3] == 'odor lost':
-                mark = circle(tup[1],tup[0])
-                pylab.plot(mark[0],mark[1],'-g')
+            if tup[3] == 'odor found' or tup[3] == 'odor lost':
+                index = kalman_dict["Kalman_list{0}".format(i)].index(tup)
+                slice_list.append(index)
+                
+        flag = False #a marker to see if any odor was detected throughout the simulation
+        for j in range(len(slice_list)-1):
+            flag = True
+            xslice = kx[slice_list[j]:slice_list[j+1]+1]
+            yslice = ky[slice_list[j]:slice_list[j+1]+1]
+            pylab.plot(xslice,yslice,color_wheel[(j+1)%2]) #choose a color from the color wheel 
+        #draw the final stretch of the between the last odor event 
+        if flag == True:
+            xslice = kx[slice_list[j+1]:]
+            yslice = ky[slice_list[j+1]:]        
+            pylab.plot(xslice,yslice,color_wheel[j%2])
+        else:
+            pylab.plot(kx,ky,'-b')
 
-
-        
-    pylab.plot(cx,cy,'-r')#add a red circle for the odor source 
-    pylab.ylim(0,500)
+    marker = circle(500,20,20)  
+    pylab.plot(marker[0],marker[1],'-r')#add a red circle for the odor source 
+    pylab.ylim(0,1000)
     pylab.xlim(0,500)
     pylab.xlabel('X position')
     pylab.ylabel('Y position')

@@ -4,7 +4,7 @@ def circle(x, y, r=3):
     listy=[]
     for i in range(int(y-r),int(y+r)):
         for j in range(int(x-r),int(x+r)):
-            if np.sqrt((i-y)**2+((j-x)**2))<r :
+            if np.sqrt(((i-y)**2)+((j-x)**2))<r :
                     listx.append(i)
                     listy.append(j)
     return (listx, listy)

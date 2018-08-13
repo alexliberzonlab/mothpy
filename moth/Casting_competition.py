@@ -19,6 +19,15 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     navigator3 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'],cd['nav_type'] , 'carde1')
     navigator4 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'],cd['nav_type'] , 'carde2')
     navigators =(navigator1,navigator2,navigator3,navigator4)
+    ############################################################################3
+    #these next lines are there just for testing of the proper turn angle to be used in the future
+    #navigator_list = list(navigatores)
+    for navigator in navigators:
+        navigator.base_turn_angle = cd['base_turn_angle']
+
+
+
+    ################################################################################3
 
     #run the simulation - each navigator runs through the exact same condition
     dict_list = moth_simulation(cd['num_it'],navigators,cd['t_max'],cd['char_time'], cd['amplitude'])

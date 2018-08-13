@@ -31,7 +31,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude
     """
     #define simulation region
     wind_region = models.Rectangle(0., -2., 10., 2.)
-    sim_region = models.Rectangle(0., -1., 2., 1.)
+    sim_region = models.Rectangle(0., -1., 4., 1.)
     #establish the dictionaries and lists that will be used
     navigator_dict ={}
     times_list = [] # a list of the time it took different moths to reach the goal, for hist purposes
@@ -54,13 +54,13 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude
     wind_model = models.WindModel(wind_region, 21, 11,1,char_time,amplitude)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
-                                    centre_rel_diff_scale=1.5,
+                                    centre_rel_diff_scale=0.75,
                                     puff_release_rate=500,
                                     puff_init_rad=0.001)
 
     #set concetration array generator
     array_gen = processors.ConcentrationArrayGenerator(sim_region, 0.01, 500,
-                                                       500, 1.)
+                                                       1000, 1.)
     # display initial concentration field as image
     conc_array = array_gen.generate_single_array(plume_model.puff_array)
     
@@ -76,19 +76,9 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude
                 if i not in del_list:
                     vel_at_pos = wind_model.velocity_at_pos(navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].x,navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].y)
                     navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].update(conc_array,vel_at_pos,0.01)
-                    #if moth is out of bound, teleport to other side
-                    moth_i = navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)]
-                    """
-                    #navigators that had reached the simulations borders 'teleport' to the other side
-                    if moth_i.y<0 :
-                        navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].y = 499 + moth_i.y
-                    elif moth_i.y>499 :
-                        navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].y = moth_i.y-499
-                    if moth_i.x<0:
-                        navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].x = 499 + moth_i.x
-                    elif moth_i.x >499 :
-                        navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].x = moth_i.x-499
-                    """
+
+
+
 
     #each of the moth lists appends the new position given by it's corresponding moth
     def draw_func():
@@ -102,8 +92,8 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude
                         times_list.append(T)
                         del moth_dict["moth{0}".format(i)]
                         del_list.append(i)
-                    #navigators that had reached the simulations borders are deleted
-                    if moth_i.y<0 or moth_i.y>499 or moth_i.x<0 or moth_i.x >499 :
+                    #navigators that had reached the simulation's borders are deleted
+                    if moth_i.y<0 or moth_i.y>999 or moth_i.x<0 or moth_i.x >499 :
                         del moth_dict["moth{0}".format(i)]
                         del_list.append(i)
 

@@ -296,17 +296,33 @@ def wind_vel_and_conc_demo(dt=0.01, t_max=5, draw_iter_interval=50):
 def moth_demo(dt=0.01, t_max = 10, draw_iter_interval=20):
     """
     a copy of the concetration_array_demo with the moth actions integrated
+
+    List of specific changes to make the simulation into "widescreen" (simulation region is twice as wide)
+    in moth_demo
+    *sim_region = models.Rectangle(0., -1., 4., 1.)  x_max is 4
+    *moth_model = models.moth_modular(sim_region, 450.0, 500.0,3,'carde1') y position is between 0 and 1000
+    array_gen = processors.ConcentrationArrayGenerator(sim_region, 0.01, 500,1000, 1.)
+    centre_rel_diff_scale=0.75,
+    in models:
+    moth_array=np.zeros((500,1000)) - considering that moth already takes in the simulation region, it should be relatively easy to make sure we don't have to change it manually every time. 
+    def __init__(self, sim_region, source_pos, wind_model, model_z_disp=True,
+                 centre_rel_diff_scale=2., puff_init_rad=0.03,
+                 puff_spread_rate=0.001, puff_release_rate=10,
+                 init_num_puffs=50, max_num_puffs=2000, prng=np.random):
+    (max puffs increased to 2000)
     """
+    
+    
     # define simulation region
     wind_region = models.Rectangle(0., -2., 10., 2.)
-    sim_region = models.Rectangle(0., -1., 2., 1.)
+    sim_region = models.Rectangle(0., -1., 4., 1.)
     #call moth model, set simulation region and starting position 
-    moth_model = models.moth_modular(sim_region, 450.0, 250.0,3,'carde1')
+    moth_model = models.moth_modular(sim_region, 200.0, 750.0,3,'carde1','crw')
     # set up wind model
     wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
-                                    centre_rel_diff_scale=1.5,
+                                    centre_rel_diff_scale=0.75,
                                     puff_release_rate=500,
                                     puff_init_rad=0.001)
 
@@ -315,7 +331,7 @@ def moth_demo(dt=0.01, t_max = 10, draw_iter_interval=20):
     # display initial concentration field as image
     #set concetration array generator
     array_gen = processors.ConcentrationArrayGenerator(sim_region, 0.01, 500,
-                                                       500, 1.)
+                                                       1000, 1.)
     # display initial concentration field as image
     conc_array = array_gen.generate_single_array(plume_model.puff_array)
     im_extents = (sim_region.x_min, sim_region.x_max,

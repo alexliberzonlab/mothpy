@@ -11,7 +11,7 @@ __license__ = 'MIT'
 import numpy as np
 import scipy.interpolate as interp
 import random
-from Carde_navigator import carde1,carde2
+from Carde_navigator import carde1,carde2,crw
 
 class Puff(object):
     """
@@ -128,7 +128,7 @@ class PlumeModel(object):
     def __init__(self, sim_region, source_pos, wind_model, model_z_disp=True,
                  centre_rel_diff_scale=2., puff_init_rad=0.03,
                  puff_spread_rate=0.001, puff_release_rate=10,
-                 init_num_puffs=50, max_num_puffs=1000, prng=np.random):
+                 init_num_puffs=50, max_num_puffs=1, prng=np.random):
         """
         Parameters
         ----------
@@ -583,12 +583,12 @@ class MeanderingGenerator(object):
 
 
 class moth_modular(object):
-    def __init__(self,sim_region,x,y,nav_type = 3, cast_type = 'carde2', wait_type = 1, beta=45,duration =0.2, speed = 200.0):
+    def __init__(self,sim_region,x,y,nav_type = 3, cast_type = 'carde2', wait_type = 'crw', beta=45,duration =0.2, speed = 200.0):
         self.x = x
         self.y = y
         self.u = 0
         self.v = 0
-        
+        self.base_turn_angle = 5
         self.sim_region = sim_region
         self.speed = speed
         
@@ -618,7 +618,7 @@ class moth_modular(object):
         self.lamda = 0.2
         
         #odor coefficients
-        self.threshold = 2500
+        self.threshold = 5000
         self.conc_max = 1
         self.base_conc = 20000
         self.odor = False
@@ -642,7 +642,6 @@ class moth_modular(object):
     """
     def update_duration(self):
         #used in navigation modes three and four
-        # I DONT UNDERSTAND WHAT IS GOING ON HERE
         if self.T%0.1:
             self.duration = self.base_duration*min(1,self.base_conc/self.conc_max)
         
@@ -675,6 +674,9 @@ class moth_modular(object):
         Input - conc_array, self.T, self.lamda
         output - true or false, changes self.Tfirst
         """
+        if int(self.x)>499 or int(self.y)>999:
+            print self.x, self.y, self.wait_type, self.cast_type
+            print conc_array.shape
         if conc_array[int(self.x)][int(self.y)]>self.threshold:
             self.smell_timer = self.Timer(self.T,self.lamda)
             #Nav mode three and four need to know whether the moth is smelling
@@ -808,6 +810,10 @@ class moth_modular(object):
             self.calculate_wind_angle(wind_vel_at_pos)
             self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
             self.v = self.speed*np.sin(self.gamma+self.wind_angle)
+
+        if self.wait_type == 'crw':
+            crw(self,wind_vel_at_pos)
+            
         
             
                                      
@@ -826,12 +832,11 @@ class moth_modular(object):
             self.state = 'wait'
         self.x += self.u*dt
         self.y += self.v*dt
-        #print self.T #delete later!
         self.T += dt
         
     def moth_array(self, conc_array, wind_vel_at_pos):
         #draw moth position on matrix
-        moth_array=np.zeros((500,500))
+        moth_array=np.zeros((500,1000))
         for i in range(10):
             for j in range(10):
                 moth_array[int(self.x)-i][int(self.y)-j]=3e4

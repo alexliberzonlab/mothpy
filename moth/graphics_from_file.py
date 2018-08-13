@@ -17,7 +17,7 @@ def save_plot(job_file_name = 'job.json',data_file_name ='data1.json',navigators
         diff_dict = dict_list[i]
         kalman_dict = kalman_filter(diff_dict)
         navigator = navigators[i]
-        title = 'cast type ' + navigator +'; char_time = ' +str(cd['char_time']) + '; amp = ' +str(cd['amplitude'])
+        title = 'correlated random walk' +  '; base turn angle = ' +str(cd['base_turn_angle']) +' try number ' + str(i)
         plot(kalman_dict,title)
 
 def save_detection_plot(job_file_name = 'job.json',data_file_name ='data1.json',navigators = ('2','3','carde1','carde2')):
@@ -37,4 +37,4 @@ def save_detection_plot(job_file_name = 'job.json',data_file_name ='data1.json',
 
 
 if __name__ == "__main__":
-    save_plot('job2.json','data2.json')
+    save_plot('job4.json','data4.json')
