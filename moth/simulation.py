@@ -25,7 +25,9 @@ from shapes import circle,square , cx ,cy
 
 
   
-def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude = 0.1 , nav_type = 3, cast_type = 2, wait_type = 1,  dt=0.01, draw_iter_interval=1):
+def moth_simulation(num_it=10,navigators = (),t_max = 1,
+                    char_time=3.5, amplitude = 0.1 ,
+                    dt=0.01, draw_iter_interval = 1):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
@@ -75,7 +77,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,char_time=3.5, amplitude
             for i in range(num_it):
                 if i not in del_list:
                     vel_at_pos = wind_model.velocity_at_pos(navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].x,navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].y)
-                    navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].update(conc_array,vel_at_pos,0.01)
+                    navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].update(conc_array,vel_at_pos,dt)
 
 
 

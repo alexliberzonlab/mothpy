@@ -42,7 +42,7 @@ def plot(kalman_dict, title = 'single navigator in flight'):
     marker = circle(500,20,20)  
     pylab.plot(marker[0],marker[1],'-r')#add a red circle for the odor source 
     pylab.ylim(0,1000)
-    pylab.xlim(0,500)
+    pylab.xlim(0,1000)
     pylab.xlabel('X position')
     pylab.ylabel('Y position')
     pylab.title(title)

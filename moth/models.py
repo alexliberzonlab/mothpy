@@ -128,7 +128,7 @@ class PlumeModel(object):
     def __init__(self, sim_region, source_pos, wind_model, model_z_disp=True,
                  centre_rel_diff_scale=2., puff_init_rad=0.03,
                  puff_spread_rate=0.001, puff_release_rate=10,
-                 init_num_puffs=50, max_num_puffs=1, prng=np.random):
+                 init_num_puffs=50, max_num_puffs=2000, prng=np.random):
         """
         Parameters
         ----------
@@ -141,7 +141,7 @@ class PlumeModel(object):
             simulation region from which puffs are released. If a length 2
             sequence is passed, the z coordinate will be set a default of 0.
             (dimensionality: length)
-        wind_model : WindModel
+        wind_model : WindMdel
             Dynamic model of the large scale wind velocity field in the
             simulation region.
         model_z_disp : boolean
@@ -286,7 +286,7 @@ class WindModel(object):
     interpolated over the edges.
     """
 
-    def __init__(self, sim_region, nx=15, ny=15, u_av=1.,char_time = 3.5,amplitude = 0.1, v_av=0., Kx=2.,
+    def __init__(self, sim_region, nx=15, ny=15, u_av=0.4,char_time = 3.5,amplitude = 0.1, v_av=0., Kx=2.,
                  Ky=2., noise_gain=0., noise_damp=0.2, noise_bandwidth=0.2, #noise_gain=5 change to 0
                  noise_rand=np.random):
         """
@@ -583,12 +583,13 @@ class MeanderingGenerator(object):
 
 
 class moth_modular(object):
-    def __init__(self,sim_region,x,y,nav_type = 3, cast_type = 'carde2', wait_type = 'crw', beta=45,duration =0.2, speed = 200.0):
+    def __init__(self,sim_region,x,y,nav_type = 1,
+                 cast_type = 'carde2', wait_type = 1,
+                 beta=45, duration =0.2, speed = 200.0):
         self.x = x
         self.y = y
         self.u = 0
         self.v = 0
-        self.base_turn_angle = 5
         self.sim_region = sim_region
         self.speed = speed
         
@@ -601,7 +602,8 @@ class moth_modular(object):
         #gamma = casting angle
         self.base_gamma = np.radians(90)
         self.gamma = (-1)**random.getrandbits(1)*self.base_gamma
-
+        #carde navigators
+        self.base_turn_angle = 5 #for crw
         self.sweep_counter = 0 # counts the number of turns for big sweep cast modes
 
         
@@ -676,6 +678,7 @@ class moth_modular(object):
         """
         if int(self.x)>499 or int(self.y)>999:
             print self.x, self.y, self.wait_type, self.cast_type
+            print 't= ' + str(self.T)
             print conc_array.shape
         if conc_array[int(self.x)][int(self.y)]>self.threshold:
             self.smell_timer = self.Timer(self.T,self.lamda)
@@ -683,6 +686,7 @@ class moth_modular(object):
             #at a specific moment, for that reason they use Tfirst.
             self.Tfirst = self.T
             self.odor = True #measure whether or not the moth is within odor threshhold. this datum will be useful while applying the kalman filter.
+            print "odor detected"
             return True
         elif self.turned_on:
             self.odor = False
@@ -694,7 +698,7 @@ class moth_modular(object):
 
         
     class Timer(object):
-        def __init__(self,T_start,duration=0.2):
+        def __init__(self,T_start,duration=10):
             self.T_start = T_start
             self.duration = duration
         def is_running(self,T_current):
@@ -819,7 +823,7 @@ class moth_modular(object):
                                      
     def update(self,conc_array,wind_vel_at_pos,dt):
         if self.T == 0: #because we want to start by casting
-            self.smell_timer = self.Timer(self.T,0.01)#start timer just not to bug out things later
+            self.smell_timer = self.Timer(self.T,dt)#start timer just not to bug out things later
             self.Tfirst = 0
         if self.is_smelling(conc_array):
             self.navigate(wind_vel_at_pos)
