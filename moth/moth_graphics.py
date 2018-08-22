@@ -75,6 +75,7 @@ def detection_plot(kalman_dict, title = 'det plot'):
     pylab.xlim(0,len(kalman_dict["Kalman_list0"])*0.01 + 10)
     pylab.xlabel('X position')
     pylab.ylabel('Y position')
+
     pylab.title(title)
     #pylab.legend(('calculated','kalman'))
     pylab.legend(loc='upper left')  

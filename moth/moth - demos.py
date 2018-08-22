@@ -318,6 +318,7 @@ def moth_demo(dt=0.01, t_max = 10, draw_iter_interval=20):
     sim_region = models.Rectangle(0., -1., 4., 1.)
     #call moth model, set simulation region and starting position 
     moth_model = models.moth_modular(sim_region, 200.0, 750.0,3,'carde1','crw')
+    #moth_model = models.moth_modular(sim_region, 450.0, 250.0,3,'carde1')
     # set up wind model
     wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,)
     # set up plume model

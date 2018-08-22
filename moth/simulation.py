@@ -80,8 +80,6 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
                     navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].update(conc_array,vel_at_pos,dt)
 
 
-
-
     #each of the moth lists appends the new position given by it's corresponding moth
     def draw_func():
         for j in range(len(navigators)):
