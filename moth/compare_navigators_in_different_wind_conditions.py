@@ -16,13 +16,13 @@ plots a single plot for each one
 """
 
 if __name__ == "__main__":
-    for i in range(1,10):
+    for i in range(1):
         job_file_ = 'job'+ str(i)+ '.json'
         data_file = 'data'+ str(i)+ '.json'
         generate_job(char_time =3.5, amplitude =0.1, job_file = job_file_,
-                     threshold = 1500,base_turn_angle = 18,t_max = 50.,
-                     dt = 0.01, num_it = 1, base_duration = 0.02*i)
+                     threshold = 1500,base_turn_angle = 35,t_max = 50.,
+                     dt = 0.05, num_it = 1, base_duration = 0.02*i)
         create_trajectory_data(job_file_,data_file)
-        title = 'wait1 cast_carde2 nav1; duration = ' + str(0.02*i) + '; threshold = ' +str(1500) 
+        title = 'crw cast_carde2 nav1; duration = ' + str(0.02*i) + '; threshold = ' +str(1500) 
         save_plot(job_file_,data_file,title)
         save_detection_plot(job_file_,data_file)
