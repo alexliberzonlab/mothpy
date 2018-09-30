@@ -12,25 +12,27 @@ import numpy as np
 
 
 def carde1(self, wind_vel_at_pos):
+            if self.state != 'cast':
+                self.sweep_counter = 1
             if self.sweep_counter < 6:
                 self.duration = self.base_duration
             else:
                 self.duration = 3*self.base_duration
                 if self.sweep_counter == 7:
                     self.sweep_counter = 0
+            self.sweep_counter += 1
                 
             self.cast2(wind_vel_at_pos)
                 
 def carde2(self,wind_vel_at_pos):
-            if self.sweep_counter < 6:
+            if self.state != 'cast':
+                self.sweep_counter = 1
+            if self.sweep_counter%7!=0:
                 self.duration = self.base_duration
             else:
-                self.duration = 30*self.base_duration
-                """
-                if self.sweep_counter == 7:
-                    self.sweep_counter = 0
-                    print 'big sweep activated'
-                """
+                self.duration = 7*self.base_duration
+                #print 'big sweep activated'
+            self.sweep_counter += 1
             self.cast2(wind_vel_at_pos)
 
 

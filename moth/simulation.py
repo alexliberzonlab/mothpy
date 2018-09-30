@@ -37,7 +37,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
     #establish the dictionaries and lists that will be used
     navigator_dict ={}
     times_list = [] # a list of the time it took different moths to reach the goal, for hist purposes
-    del_list = [] # a list of the moth indices that finished the track and were deleted 
+    del_list = [] # a list of the moth indices (i,j) that finished the track and were deleted 
 
     dist_it=0 #distance on y axis between starting points on different iterations
     for j in range(len(navigators)):
@@ -65,6 +65,15 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
                                                        1000, 1.)
     # display initial concentration field as image
     conc_array = array_gen.generate_single_array(plume_model.puff_array)
+
+
+    #run the wind and plume models for two seconds before navigators are started
+    """
+    for i in range(int(4/dt)):
+        wind_model.update(dt)
+        plume_model.update(dt)
+    """ 
+    
     
     # define update and draw functions
     def update_func(dt, t):
@@ -75,7 +84,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
         for j in range(len(navigators)):
             #update each individual moth
             for i in range(num_it):
-                if i not in del_list:
+                if (i,j) not in del_list:
                     vel_at_pos = wind_model.velocity_at_pos(navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].x,navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].y)
                     navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)].update(conc_array,vel_at_pos,dt)
 
@@ -84,20 +93,21 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
     def draw_func():
         for j in range(len(navigators)):
             for i in range(num_it):
-                if i not in del_list:
-                    moth_i = navigator_dict["tup{0}".format(j)][0]["moth{0}".format(i)]
+                if (i,j) not in del_list:
+                    moth_dict = navigator_dict["tup{0}".format(j)][0]
+                    moth_i = moth_dict["moth{0}".format(i)]
                     (x,y,T,odor,gamma,state) = (moth_i.x, moth_i.y, moth_i.T, moth_i.odor, moth_i.gamma, moth_i.state)
                     navigator_dict["tup{0}".format(j)][1]["moth_trajectory_list{0}".format(i)].append((x,y,T,odor,gamma,state))
-                    if np.sqrt((x-25)**2+((y-250)**2))<15 :
+                    if np.sqrt((x-25)**2+((y-500)**2))<15 :
                         times_list.append(T)
                         del moth_dict["moth{0}".format(i)]
-                        del_list.append(i)
+                        del_list.append((i,j))
                     #navigators that had reached the simulation's borders are deleted
                     if moth_i.y<0 or moth_i.y>999 or moth_i.x<0 or moth_i.x >499 :
                         del moth_dict["moth{0}".format(i)]
-                        del_list.append(i)
+                        del_list.append((i,j))
 
-
+    #navigator_dict["tup{0}".format(j)] = (moth_dict,list_dict)
 
 
             

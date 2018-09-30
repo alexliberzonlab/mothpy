@@ -111,7 +111,6 @@ def kalman_filter(diff_dict):
             odor = diff_dict["diff_list{0}".format(i)][j][3]
             turning =diff_dict["diff_list{0}".format(i)][j][4]
             #kalman dict carries turning and odor finding information for graphing purposes
-            kalman_dict["Kalman_list{0}".format(i)].append((kx,ky,time,odor,turning))
-
+            kalman_dict["Kalman_list{0}".format(i)].append((kx,ky,time,odor,turning))          
     #print kalman_dict
     return kalman_dict

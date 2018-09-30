@@ -14,12 +14,14 @@ from shapes import circle,square , cx ,cy
    
 def plot(kalman_dict, title = 'single navigator in flight'):
     num_it = len(kalman_dict)
-    #alternative graphic function - shows only kalman trajectories
+    # graphic function - shows only kalman trajectories, saves as file
     color_wheel =['-b','-r']
     for i in range(num_it): #present the different kalman trajectories
-        slice_list = [] #a list of indexes 
         kzip = zip(*kalman_dict["Kalman_list{0}".format(i)])
-        kx,ky=kzip[0],kzip[1]
+        kx,ky = kzip[0],kzip[1]
+        slice_list = [0] #a list of indexes of where to slice the list
+        #the different lists will be presented with different colors (red/blue)
+        #creating a single multicolor trajectory
         for tup in kalman_dict["Kalman_list{0}".format(i)]:
             if tup[3] == 'odor found' or tup[3] == 'odor lost':
                 index = kalman_dict["Kalman_list{0}".format(i)].index(tup)
@@ -27,19 +29,20 @@ def plot(kalman_dict, title = 'single navigator in flight'):
                 
         flag = False #a marker to see if any odor was detected throughout the simulation
         for j in range(len(slice_list)-1):
-            flag = True
+            flag = True #in the case where len(slice_list)==1, the flag will remain flase
             xslice = kx[slice_list[j]:slice_list[j+1]+1]
             yslice = ky[slice_list[j]:slice_list[j+1]+1]
-            pylab.plot(xslice,yslice,color_wheel[(j+1)%2]) #choose a color from the color wheel 
-        #draw the final stretch of the between the last odor event 
+            pylab.plot(xslice,yslice,color_wheel[j%2]) #choose a color from the color wheel 
+
+        #draw the final stretch of the trajectory after the last odor event 
         if flag == True:
             xslice = kx[slice_list[j+1]:]
             yslice = ky[slice_list[j+1]:]        
-            pylab.plot(xslice,yslice,color_wheel[j%2])
+            pylab.plot(xslice,yslice,color_wheel[(j+1)%2])
         else:
             pylab.plot(kx,ky,'-b')
 
-    marker = circle(500,20,20)  
+    marker = circle(500,20,30)  
     pylab.plot(marker[0],marker[1],'-r')#add a red circle for the odor source 
     pylab.ylim(0,1000)
     pylab.xlim(0,1000)
@@ -49,14 +52,13 @@ def plot(kalman_dict, title = 'single navigator in flight'):
     #pylab.legend(('calculated','kalman'))
     pylab.legend(loc='upper left')  
     #pylab.show()
-    pylab.savefig(title+ '.png')
+    pylab.savefig(title + '.png')
     pylab.clf() 
-    print "done"
 
 
 def detection_plot(kalman_dict, title = 'det plot'):
     #draws a plot of detection vs times (binary)
-    num_it = len(kalman_dict)
+    num_it = len(kalman_dict)/2
     det=0 #detection is set for binary; odor found/lost toggels det
     for i in range(num_it): #present the different kalman trajectories
         t_list = []
@@ -80,7 +82,7 @@ def detection_plot(kalman_dict, title = 'det plot'):
     #pylab.legend(('calculated','kalman'))
     pylab.legend(loc='upper left')  
     #pylab.show()
-    pylab.savefig(title+ '.png')
+    pylab.savefig(str(title) + '.png')
     pylab.clf() 
     print "done"
 

@@ -16,10 +16,10 @@ def generate_job(char_time =3.5,amplitude =0.1,
     const_dict['amplitude'] = amplitude
 
     #navigators
-    const_dict['x_start'] = 300
-    const_dict['y_start'] = 250
-    const_dict['nav_type'] = 1
-    const_dict['wait_type'] = 'crw'
+    const_dict['x_start'] = 100
+    const_dict['y_start'] = 500
+    const_dict['nav_type'] = 'alex'
+    const_dict['wait_type'] = 1
     const_dict['base_turn_angle'] = base_turn_angle #for crw
     const_dict['threshold'] = threshold
     const_dict['duration'] = base_duration

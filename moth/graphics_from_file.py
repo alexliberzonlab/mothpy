@@ -7,22 +7,20 @@ import json
 
 
 def save_plot(job_file_name = 'job.json',data_file_name ='data1.json',
-              title='1',navigators = ('2','3','carde1','carde2')):
+              title='1',navigator_titles=[]):
     with open(job_file_name) as data_file:
         cd = json.load(data_file) #constants dictionary
     with open(data_file_name) as data_file2:  
         dict_list = json.load(data_file2) #dictionary tuple
 
-    
-    for i in range(len(dict_list)):
+    for i in range(len(dict_list)-1):
         diff_dict = dict_list[i]
         kalman_dict = kalman_filter(diff_dict)
-        temp_title = title + ' try number ' + str(i)
-        navigator = navigators[i]
-        plot(kalman_dict,temp_title)
+        navigator_title = navigator_titles[i] + title
+        plot(kalman_dict,navigator_title)
 
 def save_detection_plot(job_file_name = 'job.json',data_file_name ='data1.json',
-                        navigators = ('2','3','carde1','carde2')):
+                        navigator_titles = ('2','3','carde1','carde2','carde2')):
     with open(job_file_name) as data_file:
         cd = json.load(data_file) #constants dictionary
     with open(data_file_name) as data_file2:  
@@ -32,11 +30,12 @@ def save_detection_plot(job_file_name = 'job.json',data_file_name ='data1.json',
     for i in range(len(dict_list)):
         diff_dict = dict_list[i]
         kalman_dict = kalman_filter(diff_dict)
-        navigator = navigators[i]
-        title = navigator + '; amplitude = ' +str(cd['amplitude'])
+        #navigator = navigator_titles[i]
+        ################################something should be done about these titles
+        title =  '; amplitude = ' +str(cd['amplitude'])
         detection_plot(kalman_dict,title)
 
 
 
 if __name__ == "__main__":
-    save_plot('job4.json','data4.json')
+    save_plot('job0.json','data0.json')

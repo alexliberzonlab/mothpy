@@ -600,7 +600,7 @@ class moth_modular(object):
         self.base_beta = (-1)**random.getrandbits(1)*np.radians(beta)
         self.beta = self.base_beta
         #gamma = casting angle
-        self.base_gamma = np.radians(90)
+        self.base_gamma = np.radians(80)
         self.gamma = (-1)**random.getrandbits(1)*self.base_gamma
         #carde navigators
         self.base_turn_angle = 5 #for crw
@@ -611,6 +611,7 @@ class moth_modular(object):
         self.nav_type = nav_type
         self.cast_type = cast_type    
         self.wait_type = wait_type
+        self.title = ' '
         self.state = 'wait' # or 'nav' or 'cast'
         
         #time coefficients
@@ -624,6 +625,9 @@ class moth_modular(object):
         self.conc_max = 1
         self.base_conc = 20000
         self.odor = False
+        self.last_dt_odor = False #used in 'alex' navigation
+
+        
         
     """
     Moves within the field, tracking plume and wind data and navigating accordingly. 
@@ -676,28 +680,27 @@ class moth_modular(object):
         Input - conc_array, self.T, self.lamda
         output - true or false, changes self.Tfirst
         """
-        if int(self.x)>499 or int(self.y)>999:
-            print self.x, self.y, self.wait_type, self.cast_type
-            print 't= ' + str(self.T)
-            print conc_array.shape
         if conc_array[int(self.x)][int(self.y)]>self.threshold:
             self.smell_timer = self.Timer(self.T,self.lamda)
             #Nav mode three and four need to know whether the moth is smelling
             #at a specific moment, for that reason they use Tfirst.
             self.Tfirst = self.T
-            self.odor = True #measure whether or not the moth is within odor threshhold. this datum will be useful while applying the kalman filter.
-            print "odor detected"
+            self.odor = True #this datum will be useful in the graphical functions
             return True
         elif self.turned_on:
             self.odor = False
             if self.smell_timer.is_running(self.T):
-                return True
+                return True #note - even though the there is no detection, the navigator stay in nav mode.
         else:
             self.odor = False
             return False
 
         
     class Timer(object):
+        #timer starts at a certein time (t start)
+        #for a set duration (self.duration)
+        #at each moment a timer can be called upon to check whether that duration passed
+        #return True/False
         def __init__(self,T_start,duration=10):
             self.T_start = T_start
             self.duration = duration
@@ -705,6 +708,15 @@ class moth_modular(object):
             #takes in current time and compares to self.T_start. 
             #timer.is_running is True as long as the difference is smaller then the duration.
             return T_current - self.T_start < self.duration
+
+    class Stopper(object):
+        # a device for measuring the time passed between events
+        # stopper.measure(self.T) returns the amount of time (simulated) passed since the stopper started
+        def __init__(self,T_start):
+            self.T_start = T_start
+        def measure(self,T_stop):
+            elasped = T_stop - self.T_start
+            return elasped
 
     #motion functions are defined in advance
     def go_upwind(self,wind_vel_at_pos):
@@ -762,14 +774,38 @@ class moth_modular(object):
             else: # if 0.3<t-Tfirst
                 self.beta = np.sign(self.beta)*np.radians(80)
             self.u = -self.speed*np.cos(self.beta+self.wind_angle)
-            self.v = self.speed*np.sin(self.beta+self.wind_angle)     
-                
+            self.v = self.speed*np.sin(self.beta+self.wind_angle)
         
-        #no matter which nav mode is chosen, it turns the moth on     
+        
+        if self.nav_type == 'alex':
+            if not self.last_dt_odor and self.odor: #the navigator just enters a plume
+                self.new_stopper = self.Stopper(self.T)
+                self.last_dt_odor = True
+                #print 'timer restart'
+            if self.odor: 
+                self.lamda = self.new_stopper.measure(self.T)
+            else:
+                self.last_dt_odor= False
+            #print self.lamda
+            self.go_upwind(wind_vel_at_pos)
+            """
+            self.last_dt_odor lets us the process of entering a plume
+            a new stopper is started on in the event of entering a new plume
+            note - in alex nav mode, the navigator can exit a plume and enter
+            a new one without existing while still staying in navigation.
+            for that reason, there needs to be a tracking of the odor in the last step
+            """
+            
+              
+        
+        #after nav has been activated, the navigator cannot return to waiting mode
+        #if it loses odor, it will start casting
         self.turned_on = True
         self.searching = False
 
     def cast(self,wind_vel_at_pos):
+        #print 'casting activated'
+        
         if not self.searching:
             #the searching boolean determines if this is the first iteration
             #of the loop in which the moth in casting
@@ -815,7 +851,7 @@ class moth_modular(object):
             self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
             self.v = self.speed*np.sin(self.gamma+self.wind_angle)
 
-        if self.wait_type == 'crw':
+        if self.wait_type == 'crw': #correlated random walk
             crw(self,wind_vel_at_pos)
             
         
@@ -827,7 +863,7 @@ class moth_modular(object):
             self.Tfirst = 0
         if self.is_smelling(conc_array):
             self.navigate(wind_vel_at_pos)
-            self.state = 'nav' #this has no use within the model, only for trajoctiry diaplay -kalman
+            self.state = 'nav' 
         elif self.turned_on:
             self.cast(wind_vel_at_pos)
             self.state = 'cast'
