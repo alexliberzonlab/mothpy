@@ -618,7 +618,7 @@ class moth_modular(object):
         self.base_duration = duration
         self.duration = duration
         self.T = 0
-        self.lamda = 0.2
+        self.lamda = 0.05
         
         #odor coefficients
         self.threshold = 5000

@@ -2,8 +2,8 @@ import json
 
 
 def generate_job(char_time =3.5,amplitude =0.1,
-                 job_file='job.json',threshold = 5000,
-                 base_turn_angle=5, t_max =75., dt = 0.01,num_it =1, base_duration =0.2):
+                 job_file='job.json', puff_release_rate = 10,
+                  t_max =75., dt = 0.01,num_it =1, base_duration =0.2):
     const_dict={}
 
     #simulation
@@ -15,13 +15,17 @@ def generate_job(char_time =3.5,amplitude =0.1,
     const_dict['char_time']=char_time
     const_dict['amplitude'] = amplitude
 
+    #plume source
+    const_dict['puff_release_rate'] = puff_release_rate
+    
+
     #navigators
     const_dict['x_start'] = 100
     const_dict['y_start'] = 500
     const_dict['nav_type'] = 'alex'
     const_dict['wait_type'] = 1
-    const_dict['base_turn_angle'] = base_turn_angle #for crw
-    const_dict['threshold'] = threshold
+    const_dict['base_turn_angle'] = 18 #for crw
+    const_dict['threshold'] = 1800
     const_dict['duration'] = base_duration
     
     
