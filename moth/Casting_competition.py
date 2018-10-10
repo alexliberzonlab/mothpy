@@ -35,7 +35,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     #set up a large number of navigators with different properties
     navigator_titles = []
     counter = 0
-    """
+
     for j in range(10):
         for i in range(10):
             new_navigator = copy.copy(navigator1)
@@ -47,16 +47,16 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.base_duration  = 0.2 
             new_navigator.threshold = 200 + j*100
             
-            title = 'wait_type = ' + str(new_navigator.wait_type) \
-                +'; cast_type = ' + str(new_navigator.cast_type) \
-                + '; nav_type = ' + str(new_navigator.nav_type) \
+            title = 'wait = ' + str(new_navigator.wait_type) \
+                +'; cast = ' + str(new_navigator.cast_type) \
+                + '; nav = ' + str(new_navigator.nav_type) \
                 + '; threshold = ' + str(new_navigator.threshold)\
                 + ' ' + str(counter)
                 
             navigators.append(new_navigator)
             navigator_titles.append(title)
             counter += 1
-    """
+
     for j in range(10):
         for i in range(10):
             new_navigator = copy.copy(navigator1)

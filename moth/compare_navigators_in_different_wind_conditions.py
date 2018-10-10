@@ -16,7 +16,7 @@ plots a single plot for each one
 """
 
 if __name__ == "__main__":
-    for i in range(5):
+    for i in range(1):
         job_file_name = 'job'+ str(i)+ '.json'
         data_file_name = 'data'+ str(i)+ '.json'
         #titles_file_name = 'titles'+ str(i)+ '.json'       

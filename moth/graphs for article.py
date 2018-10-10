@@ -17,7 +17,7 @@ from shapes import circle,square , cx ,cy
 def plot(kalman_dict, title = 'Typical paths of navigators'):
     num_it = len(kalman_dict)
     # graphic function - shows only kalman trajectories, saves as file
-    color_wheel =['-g','-c','-m','-y','-k']
+    color_wheel =['-g','-m','-y','-k']
     for i in range(num_it): #present the different kalman trajectories
         kzip = zip(*kalman_dict["Kalman_list{0}".format(i)])
         kx,ky = kzip[0],kzip[1]       
@@ -38,15 +38,18 @@ def plot(kalman_dict, title = 'Typical paths of navigators'):
 
 
 if __name__ == "__main__":
-    with open('data4.json') as data_file2:  
-        dict_list = json.load(data_file2) #dictionary tuple
+    with open('data0.json') as data_file2:  
+        dict_list = json.load(data_file2) 
+
+    with open('data2.json') as data_file2:  
+        dict_list2 = json.load(data_file2)
     new_dict ={}
     kalman_dict0 = dict_list[07]
-    kalman_dict1 = dict_list[12]
-    kalman_dict2 = dict_list[15]
+    kalman_dict1 = dict_list[167]
+    #kalman_dict2 = dict_list[15]
     new_dict["diff_list0"] = kalman_dict0["diff_list{0}".format(0)] 
     new_dict["diff_list1"] = kalman_dict1["diff_list{0}".format(0)]
-    new_dict["diff_list2"] = kalman_dict2["diff_list{0}".format(0)]
+    #new_dict["diff_list2"] = kalman_dict2["diff_list{0}".format(0)]
     
     kalman_dict = kalman_filter(new_dict)
     plot(kalman_dict)
