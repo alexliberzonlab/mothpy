@@ -96,16 +96,17 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
                 if (i,j) not in del_list:
                     moth_dict = navigator_dict["tup{0}".format(j)][0]
                     moth_i = moth_dict["moth{0}".format(i)]
-                    (x,y,T,odor,gamma,state) = (moth_i.x, moth_i.y, moth_i.T, moth_i.odor, moth_i.gamma, moth_i.state)
-                    navigator_dict["tup{0}".format(j)][1]["moth_trajectory_list{0}".format(i)].append((x,y,T,odor,gamma,state))
+                    (x,y,T,odor,gamma,state,success) = (moth_i.x, moth_i.y, moth_i.T, moth_i.odor, moth_i.gamma, moth_i.state,False)
+                    
                     if np.sqrt((x-25)**2+((y-500)**2))<15 :
-                        times_list.append(T)
+                        success= True
                         del moth_dict["moth{0}".format(i)]
                         del_list.append((i,j))
                     #navigators that had reached the simulation's borders are deleted
                     if moth_i.y<0 or moth_i.y>999 or moth_i.x<0 or moth_i.x >499 :
                         del moth_dict["moth{0}".format(i)]
                         del_list.append((i,j))
+                    navigator_dict["tup{0}".format(j)][1]["moth_trajectory_list{0}".format(i)].append((x,y,T,odor,gamma,state,success))                    
 
     #navigator_dict["tup{0}".format(j)] = (moth_dict,list_dict)
 
@@ -129,7 +130,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
             currentlist = navigator_dict["tup{0}".format(k)][1]["moth_trajectory_list{0}".format(i)]
             diff_list = []
             for j in range(len(currentlist)):
-                    (x,y,T,odor,gamma,state) = currentlist[j] #odor and gamma will be rewritten
+                    (x,y,T,odor,gamma,state,success) = currentlist[j] #odor and gamma will be rewritten
                     if j < 1: #first object on the list, nothing happens
                         odor = None
                         turning = False
@@ -144,8 +145,10 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
                             turning = True
                         else:
                             turning = False
+                        
+                        
                     
-                    diff_list.append((x,y,T,odor,turning))
+                    diff_list.append((x,y,T,odor,turning,success))
             diff_dict["diff_list{0}".format(i)] = diff_list
         diff_dict_lst.append(diff_dict)
       

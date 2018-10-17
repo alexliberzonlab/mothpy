@@ -42,7 +42,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.wait_type = 'crw'
             new_navigator.cast_type = 'carde2'
             new_navigator.nav_type = 1
-            new_navigator.y = 350
+            new_navigator.y = 500
             new_navigator.x = 350
             new_navigator.base_duration  = 0.2 
             new_navigator.threshold = 200 + j*100
@@ -63,7 +63,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.wait_type = 1
             new_navigator.cast_type = 1
             new_navigator.nav_type = 'alex'
-            new_navigator.y = 400 - i*5
+            new_navigator.y = 525 - i*5
             new_navigator.x = 499 
             new_navigator.base_duration  = 0.1 
             new_navigator.threshold = 200 + j*100
