@@ -39,7 +39,10 @@ def search_efficiency(dict_list):
             search_eff = 1 - T_odor/len(diff_dict["diff_list{0}".format(0)])
             #print search_eff
             search_efficincy_list.append(search_eff)
-    average = math.fsum(search_efficincy_list) / len(search_efficincy_list)
+    if search_efficincy_list != []:
+        average = math.fsum(search_efficincy_list) / len(search_efficincy_list)
+    else:
+        average = 0
     return average
 
 def average_time(dict_list):
@@ -82,18 +85,12 @@ def calc_stats(diff_dict):
     return [succ_prec ,average_time_,average_efficiency]
 
 
-if __name__ == "__main__":
-    with open('data0.json') as data_file1:  
-        dict_list1 = json.load(data_file1)
-    data1 = calc_stats(dict_list1)
-    with open('data1.json') as data_file2:  
-        dict_list2 = json.load(data_file2)
-    data2 = calc_stats(dict_list2)    
-    with open('data2.json') as data_file3:  
-        dict_list3 = json.load(data_file3)
-    data3 = calc_stats(dict_list3)
 
-    tot_stats = [data1,data2,data3]
+
+def create_graphs(tot_stats):
+    data1 = tot_stats[0]
+    data2 = tot_stats[1]
+    data3 = tot_stats[2]
 
     ####################################################################
     #one graph to show all of the data
@@ -137,4 +134,41 @@ if __name__ == "__main__":
 
 
     plt.show()
-    
+def three_way_splice(list_dict):
+    length = len(list_dict)
+    if length%3 != 0:
+        raise Exception('are you sure want to splice this list to three parts?')
+
+    len3 = int(length/3)
+    list1 = list_dict[:len3]
+    list2 = list_dict[len3:2*len3]
+    list3 = list_dict[2*len3:]
+    """
+    print len(list1)
+    print len(list2)
+    print len(list3)
+    print length
+    """
+    return (list1,list2,list3)
+
+
+
+
+
+
+if __name__ == "__main__":
+    with open('data0.json') as data_file1:  
+        dict_list1 = json.load(data_file1)
+    """
+    with open('data1.json') as data_file2:  
+        dict_list2 = json.load(data_file2)
+    with open('data2.json') as data_file3:  
+        dict_list3 = json.load(data_file3)
+    """
+    dict_list1,dict_list2,dict_list3 = three_way_splice(dict_list1)
+    data1 = calc_stats(dict_list1)
+    data2 = calc_stats(dict_list2) 
+    data3 = calc_stats(dict_list3)
+
+    tot_stats = [data1,data2,data3]
+    create_graphs(tot_stats)
