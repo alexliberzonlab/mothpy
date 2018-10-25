@@ -621,7 +621,7 @@ class moth_modular(object):
         self.lamda = 0.05
         
         #odor coefficients
-        self.threshold = 5000
+        self.threshold = 500
         self.conc_max = 1
         self.base_conc = 20000
         self.odor = False

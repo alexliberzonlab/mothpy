@@ -30,27 +30,27 @@ def plot(kalman_dict, title = 'Typical paths of navigators'):
     pylab.xlabel('X position')
     pylab.ylabel('Y position')
     pylab.title(title)
-    pylab.legend(('Liberzon','Final sweeps','Large final sweeps'))
+    #pylab.legend(('Liberzon','Final sweeps','Large final sweeps'))
     pylab.legend(loc='upper left')  
     #pylab.show()
     pylab.savefig(title + '.png')
     pylab.clf() 
 
 
-if __name__ == "__main__":
-    with open('data0.json') as data_file2:  
+#if __name__ == "__main__":
+for i in range(1):
+    with open('data' +str(i) +'.json') as data_file2:  
         dict_list = json.load(data_file2) 
-
-    with open('data2.json') as data_file2:  
-        dict_list2 = json.load(data_file2)
     new_dict ={}
-    kalman_dict0 = dict_list[07]
-    kalman_dict1 = dict_list[167]
-    #kalman_dict2 = dict_list[15]
+    kalman_dict0 = dict_list[1439]
+    kalman_dict1 = dict_list[821]
+    kalman_dict2 = dict_list[664]
     new_dict["diff_list0"] = kalman_dict0["diff_list{0}".format(0)] 
     new_dict["diff_list1"] = kalman_dict1["diff_list{0}".format(0)]
-    #new_dict["diff_list2"] = kalman_dict2["diff_list{0}".format(0)]
+    new_dict["diff_list2"] = kalman_dict2["diff_list{0}".format(0)]
     
     kalman_dict = kalman_filter(new_dict)
-    plot(kalman_dict)
+    title1 = 'Demonstration of Large Final Sweeps Casting' +str(i)
+    title2 = 'Demonstration of Final Sweeps Casting'
+    plot(kalman_dict,title1)
 

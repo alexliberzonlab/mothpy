@@ -9,6 +9,9 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import seaborn as sns
+sns.set(style="darkgrid")
+
 __authors__ = 'Noam Benelli'
 
 
@@ -85,7 +88,11 @@ def calc_stats(diff_dict):
     return [succ_prec ,average_time_,average_efficiency]
 
 
-
+def seaborn_graphs(tot_stats):
+    g = sns.FacetGrid(tot_stats, row="sex", col="time", margin_titles=True)
+    bins = np.linspace(0, 60, 13)
+    sns.barplot(x="sex", y="survived", hue="class", kind="bar", data=titanic);
+    sns.show()
 
 def create_graphs(tot_stats):
     data1 = tot_stats[0]
@@ -118,39 +125,65 @@ def create_graphs(tot_stats):
 
     ############################################################################
     #three seperate graphs
+    #success percenrage
     plt.figure()
-    ax = fig.add_subplot(111)
-    (succ_prec ,average_time_,average_efficienc) = zip(*tot_stats)
-
+    (succ_prec ,average_time_,average_efficiency) = zip(*tot_stats)
+    ay = fig.add_subplot(111)
     index = np.arange(0, n_groups, 1)
 
     chart = plt.bar(index, succ_prec, bar_width, color='blue', edgecolor='black')
-    #chart = plt.bar(index+bar_width, succ_prec[1], bar_width, color='red', edgecolor='black')
-    #chart = plt.bar(index+2*bar_width, succ_prec[2], bar_width, color='green', edgecolor='black')
     plt.xticks(index+bar_width*0.5, ('Final Sweeps', 'Large Final Sweeps', 'Liberzon'))
-    ax.set_title('Success Percentage')
+    plt.title('Success Percentage')
     plt.legend()
     plt.tight_layout()
+    #plt.show()
 
 
+    #average time
+    plt.figure()
+    az = fig.add_subplot(111)
+
+    chart = plt.bar(index, average_time_, bar_width, color='green', edgecolor='black')
+    plt.xticks(index+bar_width*0.5, ('Final Sweeps', 'Large Final Sweeps', 'Liberzon'))
+    plt.title('Average Time')
+    plt.legend()
+    plt.tight_layout()
     plt.show()
-def three_way_splice(list_dict):
-    length = len(list_dict)
-    if length%3 != 0:
-        raise Exception('are you sure want to splice this list to three parts?')
 
-    len3 = int(length/3)
-    list1 = list_dict[:len3]
-    list2 = list_dict[len3:2*len3]
-    list3 = list_dict[2*len3:]
-    """
-    print len(list1)
-    print len(list2)
-    print len(list3)
-    print length
-    """
-    return (list1,list2,list3)
+    #average_efficiency
+    plt.figure()
+    az = fig.add_subplot(111)
 
+    chart = plt.bar(index, average_efficiency, bar_width, color='red', edgecolor='black')
+    plt.xticks(index+bar_width*0.5, ('Final Sweeps', 'Large Final Sweeps', 'Liberzon'))
+    plt.title('Average Efficiency')
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+    
+
+
+
+
+def multi_splice(list_dict,n):
+    length =len(list_dict)
+    if length%n != 0:
+        raise Exception('are you sure want to splice this list to %5.3i parts?' %n)
+
+    
+    spliced_lists = []
+    lenn = int(length/n)
+    for i in range(n):
+        if i ==0 :
+            new_list = list_dict[:lenn]
+        elif i == n-1:
+            new_list = list_dict[i*lenn:]
+        else:
+            new_list = list_dict[lenn*i:lenn*(i+1)]
+        spliced_lists.append(new_list)
+    return spliced_lists
 
 
 
@@ -159,16 +192,10 @@ def three_way_splice(list_dict):
 if __name__ == "__main__":
     with open('data0.json') as data_file1:  
         dict_list1 = json.load(data_file1)
-    """
-    with open('data1.json') as data_file2:  
-        dict_list2 = json.load(data_file2)
-    with open('data2.json') as data_file3:  
-        dict_list3 = json.load(data_file3)
-    """
-    dict_list1,dict_list2,dict_list3 = three_way_splice(dict_list1)
-    data1 = calc_stats(dict_list1)
-    data2 = calc_stats(dict_list2) 
-    data3 = calc_stats(dict_list3)
 
-    tot_stats = [data1,data2,data3]
-    create_graphs(tot_stats)
+    spliced_lists = multi_splice(dict_list1,3)
+    data_list = [calc_stats(dict_list) for dict_list in spliced_lists]
+
+    #seaborn_graphs(tot_stats)
+    create_graphs(data_list)
+    
