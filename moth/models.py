@@ -619,6 +619,7 @@ class moth_modular(object):
         self.duration = duration
         self.T = 0
         self.lamda = 0.05
+        self.alex_factor = 1.5
         
         #odor coefficients
         self.threshold = 500
@@ -782,8 +783,10 @@ class moth_modular(object):
                 self.new_stopper = self.Stopper(self.T)
                 self.last_dt_odor = True
                 #print 'timer restart'
-            if self.odor: 
-                self.lamda = self.new_stopper.measure(self.T)
+            if self.odor:
+                time_in_plaume = self.new_stopper.measure(self.T)
+                self.lamda = time_in_plaume
+                self.duration = time_in_plaume* self.alex_factor
             else:
                 self.last_dt_odor= False
             #print self.lamda
@@ -815,9 +818,14 @@ class moth_modular(object):
             #in order to make sure the moth navigates in the direction in which it found the plume
             self.gamma = np.sign(self.beta)*np.abs(self.gamma)
             
-        if self.cast_type == 1:
+        if self.cast_type == 0:
             self.u=0
             self.v=0
+            
+        if self.cast_type == 1:
+            self.calculate_wind_angle(wind_vel_at_pos)
+            self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
+            self.v = self.speed*np.sin(self.gamma+self.wind_angle)
 
         if self.cast_type == 2:
             #define different betas for different casting patterns
@@ -834,6 +842,8 @@ class moth_modular(object):
             
         if self.cast_type == 'carde2':
             carde2(self,wind_vel_at_pos)
+
+
             
             
 

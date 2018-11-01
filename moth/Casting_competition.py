@@ -9,6 +9,7 @@ from moth_graphics import plot
 #from statistics import calc_stats
 import json
 import copy
+import numpy as np
 
 def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json',
                            titles_file_name = 'titles.json'):
@@ -35,9 +36,9 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     #set up a large number of navigators with different properties
     navigator_titles = []
     counter = 0
-
+    """
     for j in range(10):
-        for i in range(100):
+        for i in range(300):
             new_navigator = copy.copy(navigator1)
             new_navigator.wait_type = 'crw'
             new_navigator.cast_type = 'carde2'
@@ -56,6 +57,8 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             navigators.append(new_navigator)
             navigator_titles.append(title)
             counter += 1
+
+
 
     for j in range(10):
         for i in range(100):
@@ -79,26 +82,49 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             counter += 1
     """
     for j in range(10):
-        for i in range(10):
+        for i in range(20):
             new_navigator = copy.copy(navigator1)
             new_navigator.wait_type = 1
-            new_navigator.cast_type = 1
+            new_navigator.cast_type = 2
             new_navigator.nav_type = 'alex'
-            new_navigator.y = 525 - i*5
+            new_navigator.y = 450 - i*5
             new_navigator.x = 499 
             new_navigator.base_duration  = 0.1 
-            new_navigator.threshold = 200 + j*100
+            new_navigator.threshold = 500
+            new_navigator.base_gamma = np.radians(90) 
+            new_navigator.alex_factor= j *0.5
             #title = str(i) 
-            title = 'wait -' + str(new_navigator.wait_type) \
+            title = 'gamma- 90' \
                 +'; cast - ' + str(new_navigator.cast_type) \
                 + '; nav - ' + str(new_navigator.nav_type) \
-                + '; threshold = ' + str(new_navigator.threshold)\
+                + '; Alex_factor = ' + str(new_navigator.alex_factor)\
                 + ' ' + str(counter)
                 
             navigators.append(new_navigator)
             navigator_titles.append(title)
             counter += 1
-    """
+
+    for j in range(10):
+        for i in range(20):
+            new_navigator = copy.copy(navigator1)
+            new_navigator.wait_type = 1
+            new_navigator.cast_type = 1
+            new_navigator.nav_type = 'alex'
+            new_navigator.y = 450 - i*5
+            new_navigator.x = 499 
+            new_navigator.base_duration  = 0.1 
+            new_navigator.threshold = 500
+            new_navigator.alex_factor= j *0.5
+            #title = str(i) 
+            title = 'gamma- 80' \
+                +'; cast - ' + str(new_navigator.cast_type) \
+                + '; nav - ' + str(new_navigator.nav_type) \
+                + '; Alex_factor = ' + str(new_navigator.alex_factor)\
+                + ' ' + str(counter)
+                
+            navigators.append(new_navigator)
+            navigator_titles.append(title)
+            counter += 1
 
      
 
@@ -108,7 +134,8 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     #run the simulation - each navigator runs through the exact same conditions
     dict_list = moth_simulation(cd['num_it'],
                                 navigators,cd['t_max'],cd['char_time'],
-                                cd['amplitude'], cd['dt'], cd['puff_release_rate'])
+                                cd['amplitude'], cd['dt'], cd['puff_release_rate'],1,
+                                False)
 
 
     with open(data_file_name, 'w') as outfile:

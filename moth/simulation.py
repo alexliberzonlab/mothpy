@@ -27,7 +27,8 @@ from shapes import circle,square , cx ,cy
   
 def moth_simulation(num_it=10,navigators = (),t_max = 1,
                     char_time=3.5, amplitude = 0.1 ,
-                    dt=0.01, puff_release_rate=10,draw_iter_interval = 1):
+                    dt=0.01, puff_release_rate=10,draw_iter_interval = 1 ,
+                    prep_plume = False):
     """
     a copy of the concetration_array_demo with the moth actions integrated
     """
@@ -68,12 +69,12 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
     conc_array = array_gen.generate_single_array(plume_model.puff_array)
 
 
-    #run the wind and plume models for two seconds before navigators are started
+    #run the wind and plume models for 4 seconds before navigators are started
+    if prep_plume:
+        for i in range(int(4/dt)):
+            wind_model.update(dt)
+            plume_model.update(dt)
 
-    for i in range(int(4/dt)):
-        wind_model.update(dt)
-        plume_model.update(dt)
-    
     
     # define update and draw functions
     def update_func(dt, t):
