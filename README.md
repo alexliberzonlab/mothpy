@@ -1,6 +1,8 @@
-## `pompy` - *p*uff-based *o*dour plume *m*odel in *Py*thon
+## PomPy - *p*uff-based *o*dour plume *m*odel in *Py*thon
 
-`pompy` is a NumPy based implementation of the puff-based odour plume model described in [*Filament-Based Atmospheric Dispersion Model to Achieve Short Time-Scale Structure of Odor Plumes*](http://link.springer.com/article/10.1023%2FA%3A1016283702837#page-1) by Farrell et al. (2002).
+[![Documentation Status](https://readthedocs.org/projects/pompy-docs/badge/?version=latest)](https://pompy-docs.readthedocs.io/en/latest/?badge=latest)
+
+PomPy is a NumPy based implementation of the puff-based odour plume model described in [*Filament-Based Atmospheric Dispersion Model to Achieve Short Time-Scale Structure of Odor Plumes*](http://link.springer.com/article/10.1023%2FA%3A1016283702837#page-1) by Farrell et al. (2002).
 
 ![Plume model animation](plume.gif "Plume model animation example.")
 
@@ -10,15 +12,27 @@ This Python package allows simulation of dynamic 2D odour concentration fields w
 
 ### Installation and requirements
 
-`pompy` was developed in Python 2.7. For basic usage of the models the two dependencies are NumPy and SciPy. For the demonstrations Matplotlib is also required. To install in the current Python environment run
+PomPy was developed in Python 2.7 though it may be compatible with newer Python versions. For basic usage of the models the two dependencies are NumPy and SciPy. For the demonstrations in the `pompy.demo` module Matplotlib is also required. The [`requirements.txt`](requirements.txt) file lists versions of NumPy, SciPy and Matplotlib known to work with `pompy`. A Jupyter notebook server installation will also be required to run the example notebooks locally. 
+
+To install PomPy in the current Python environment run
 
 ```
 python setup.py install
 ```
 
-### Example usage
+and to install the Python requirements using `pip` run
 
-See also `pompy/demos.py` module. The below script will generate a 20 second MP4 animation (see above for GIF version) of a generated plume with model parameters consistent with those proposed in the Farrell et al. (2002) paper
+```
+pip install -r requirements.txt
+```
+
+### Documentation
+
+Documentation of the `pompy` API is available at [Read the Docs](https://pompy-docs.readthedocs.io/en/latest/).
+
+Two Jupyter notebooks showing examples of using the package are included in the repository root directory. The [`Farrell et al. (2002) example.ipynb`](Farrell%20et%20al.%20%282002%29%20example.ipynb) notebook file illustrates an example of using PomPy to generate an animation of an odour plume using the simulation parameters described in Farrell et al. (2002) and includes keys to match the symbols used to define the parameter in the paper with the relevant `pompy` class attributes. The [`Demonstration.ipynb`](Demonstrations.ipynb) and accompanying module `pompy.demos` give several other examples of setting up plume models using `pompy` and visualising the simulations.
+
+The below script will generate a 20 second MP4 animation (see above for animated GIF version) of a generated plume with model parameters consistent with those proposed in the Farrell et al. (2002) paper.
 
 ```python
 from pompy import models, processors
@@ -30,26 +44,29 @@ from matplotlib.animation import FuncAnimation
 seed = 20180517
 rng = np.random.RandomState(seed)
 
+# Define wind model simulation region
+wind_region = models.Rectangle(x_min=0., x_max=100., y_min=-50., y_max=50.)
+
 # Define wind model parameters
-wind_model_params = {
-    'sim_region': models.Rectangle(0., -50., 100., 50.),
-    'nx': 21,
-    'ny': 21,
+wind_model_params = { 
+    'n_x': 21,
+    'n_y': 21,
     'u_av': 1.,
     'v_av': 0.,
-    'Kx': 2.,
-    'Ky': 2.,
+    'k_x': 10.,
+    'k_y': 10.,
     'noise_gain': 20.,
     'noise_damp': 0.1,
     'noise_bandwidth': 0.2,
+    'use_original_noise_updates': True
 }
 
 # Create wind model object
-wind_model = models.WindModel(noise_rand=rng, **wind_model_params)
+wind_model = models.WindModel(wind_region, rng=rng, **wind_model_params)
 
 # Define plume simulation region
-# This is a subset of the wind simulation region to minimise boundary effects
-sim_region = models.Rectangle(0., -12.5, 50., 12.5)
+# This is a subset of the wind simulation region
+sim_region = models.Rectangle(x_min=0., x_max=50., y_min=-12.5, y_max=12.5)
 
 # Define plume model parameters
 plume_model_params = {
@@ -65,14 +82,13 @@ plume_model_params = {
 
 # Create plume model object
 plume_model = models.PlumeModel(
-    prng=rng, sim_region=sim_region, wind_model=wind_model, 
-    **plume_model_params)
+    rng=rng, sim_region=sim_region, wind_model=wind_model, **plume_model_params)
 
 # Define concentration array (image) generator parameters
 array_gen_params = {
     'array_z': 0.,
-    'nx': 500,
-    'ny': 250,
+    'n_x': 500,
+    'n_y': 250,
     'puff_mol_amount': 8.3e8
 }
 
@@ -87,13 +103,15 @@ ax.axis('off')
 
 # Display initial concentration field as image
 conc_array = array_gen.generate_single_array(plume_model.puff_array)
-im_extents = (sim_region.x_min, sim_region.x_max,
-              sim_region.y_min, sim_region.y_max)
 conc_im = ax.imshow(
-    conc_array.T, extent=im_extents, vmin=0., vmax=1e10, cmap='Reds')
+    conc_array.T, extent=sim_region, vmin=0., vmax=1e10, cmap='Reds')
 
 # Simulation timestep
 dt = 0.01
+
+# Run wind model forward to equilibrate
+for k in range(2000):
+    wind_model.update(dt)
 
 # Define animation update function
 def update(i):
