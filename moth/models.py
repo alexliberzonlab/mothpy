@@ -126,8 +126,8 @@ class PlumeModel(object):
     """
 
     def __init__(self, sim_region, source_pos, wind_model, model_z_disp=True,
-                 centre_rel_diff_scale=2., puff_init_rad=0.03,
-                 puff_spread_rate=0.001, puff_release_rate=10,
+                 centre_rel_diff_scale=.5, puff_init_rad=0.03,
+                 puff_spread_rate=0.0003, puff_release_rate=200,
                  init_num_puffs=50, max_num_puffs=2000, prng=np.random):
         """
         Parameters
@@ -585,7 +585,7 @@ class MeanderingGenerator(object):
 class moth_modular(object):
     def __init__(self,sim_region,x,y,nav_type = 1,
                  cast_type = 'carde2', wait_type = 1,
-                 beta=45, duration =0.2, speed = 200.0):
+                 beta=30, duration =0.5, speed = 200.0):
         self.x = x
         self.y = y
         self.u = 0
@@ -600,7 +600,7 @@ class moth_modular(object):
         self.base_beta = (-1)**random.getrandbits(1)*np.radians(beta)
         self.beta = self.base_beta
         #gamma = casting angle
-        self.base_gamma = np.radians(80)
+        self.base_gamma = np.radians(90)
         self.gamma = (-1)**random.getrandbits(1)*self.base_gamma
         #carde navigators
         self.base_turn_angle = 5 #for crw
@@ -728,15 +728,14 @@ class moth_modular(object):
     def cast2(self,wind_vel_at_pos):
             #similar to nav_type 3
             #set timer as soon as moth isn't smelling odor, turn as soon as timer is over
-            #duration grows every time timer is used
             if not self.searching:
                 #start timer
                 self.timer = self.Timer(self.T,self.duration)
                 self.searching = True
+                self.duration = self.base_duration
             elif not self.timer.is_running(self.T):
                 self.change_direction()
-                self.timer = self.Timer(self.T,self.duration)
-                self.duration = self.duration*2                    
+                self.timer = self.Timer(self.T,self.duration)                  
             self.calculate_wind_angle(wind_vel_at_pos)
             self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
             self.v = self.speed*np.sin(self.gamma+self.wind_angle)
@@ -755,7 +754,7 @@ class moth_modular(object):
             self.v = self.speed*np.sin(self.beta+self.wind_angle)
           
         if self.nav_type == 3:
-            #from the article, strategy 2
+            #from Li,w. 2001 - strategy 2:  Constant crosswind with counterturn
             #if moth is currently in sensing odor, go upwind
             #if moth has sensed odor in the last lamda, traverse at angle
             if self.Tfirst == self.T:
@@ -766,7 +765,7 @@ class moth_modular(object):
                 self.v = self.speed*np.sin(self.beta + self.wind_angle)
                 
         if self.nav_type == 4:
-            #from the article, strategy 3
+            #from Li,w. 2001 -  strategy 3: Progressive crosswind with counterturn
             self.calculate_wind_angle(wind_vel_at_pos)
             if self.T-self.Tfirst < 0.1:
                 self.beta = np.sign(self.beta)*np.radians(10)
@@ -782,14 +781,12 @@ class moth_modular(object):
             if not self.last_dt_odor and self.odor: #the navigator just enters a plume
                 self.new_stopper = self.Stopper(self.T)
                 self.last_dt_odor = True
-                #print 'timer restart'
             if self.odor:
-                time_in_plaume = self.new_stopper.measure(self.T)
-                self.lamda = time_in_plaume
-                self.duration = time_in_plaume* self.alex_factor
+                time_in_plume = self.new_stopper.measure(self.T)
+                self.lamda = time_in_plume
+                self.duration = time_in_plume* self.alex_factor
             else:
                 self.last_dt_odor= False
-            #print self.lamda
             self.go_upwind(wind_vel_at_pos)
             """
             self.last_dt_odor lets us the process of entering a plume
@@ -807,16 +804,9 @@ class moth_modular(object):
         self.searching = False
 
     def cast(self,wind_vel_at_pos):
-        #print 'casting activated'
-        
-        if not self.searching:
-            #the searching boolean determines if this is the first iteration
-            #of the loop in which the moth in casting
-            #if it's false, it means the moth is right now transitioning from
-            #navigating to casting
-            self.beta = -self.beta
-            #in order to make sure the moth navigates in the direction in which it found the plume
-            self.gamma = np.sign(self.beta)*np.abs(self.gamma)
+        if self.state != 'cast' :
+            #if this is the beginging of a new casting phase
+            self.change_direction()
             
         if self.cast_type == 0:
             self.u=0
@@ -832,7 +822,14 @@ class moth_modular(object):
             self.cast2(wind_vel_at_pos)
 
         if self.cast_type == 3:
-            #same as cast_type 2, only beta and duration change while flying
+            #same as cast2 but every sweep the duration doubles
+            #effectively creating an expanding casting pattern
+            self.cast2(wind_vel_at_pos)
+            if self.searching and not self.timer.is_running(self.T):
+                self.duration *= 3
+            
+        if self.cast_type == 4:
+            #same as cast_type 2, only gamma and duration change while flying
             self.update_gamma()
             self.update_duration()
             self.cast2(wind_vel_at_pos)
@@ -842,11 +839,6 @@ class moth_modular(object):
             
         if self.cast_type == 'carde2':
             carde2(self,wind_vel_at_pos)
-
-
-            
-            
-
 
     def wait(self,wind_vel_at_pos):
         if self.wait_type == 1:
@@ -863,9 +855,7 @@ class moth_modular(object):
 
         if self.wait_type == 'crw': #correlated random walk
             crw(self,wind_vel_at_pos)
-            
-        
-            
+    
                                      
     def update(self,conc_array,wind_vel_at_pos,dt):
         if self.T == 0: #because we want to start by casting
