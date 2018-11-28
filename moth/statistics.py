@@ -170,7 +170,7 @@ def create_graphs(tot_stats):
 def multi_splice(list_dict,n):
     length =len(list_dict)
     if length%n != 0:
-        raise Exception('are you sure want to splice this list to %5.3i parts?' %n)
+        raise Exception('Number of navigators could not be devided into %0.1i' %n)
 
     
     spliced_lists = []

@@ -600,7 +600,7 @@ class moth_modular(object):
         self.base_beta = (-1)**random.getrandbits(1)*np.radians(beta)
         self.beta = self.base_beta
         #gamma = casting angle
-        self.base_gamma = np.radians(30)
+        self.base_gamma = np.radians(90)
         self.gamma = (-1)**random.getrandbits(1)*self.base_gamma
         #carde navigators
         self.base_turn_angle = 5 #for crw
@@ -618,7 +618,7 @@ class moth_modular(object):
         self.base_duration = duration
         self.duration = duration
         self.T = 0
-        self.lamda = 0.05
+        self.lamda = 0.1
         self.alex_factor = 1.5
         
         #odor coefficients
@@ -660,11 +660,8 @@ class moth_modular(object):
             self.gamma = np.sign(self.gamma)*(1.5708 - ((1.5708 - np.abs(self.base_gamma)) * min(1 , self.base_conc/self.conc_max)))
             
     def calculate_wind_angle(self,wind_vel_at_pos):
-        #The angle of the wind relative to the moth (makes use of the moths speed)
-        y = wind_vel_at_pos[1]*250-self.v
-        x = wind_vel_at_pos[0]*250-self.u
-        mag =np.sqrt(x**2+y**2)
-        self.wind_angle = np.arcsin(y/mag)
+        #The angle of the wind as percieved from the ground. Does not use the moth's speed.
+        self.wind_angle = np.arcsin(wind_vel_at_pos[1]/np.sqrt(wind_vel_at_pos[0]**2+wind_vel_at_pos[1]**2))
 
     def change_direction(self):
         self.gamma = -self.gamma
@@ -825,7 +822,7 @@ class moth_modular(object):
             self.cast2(wind_vel_at_pos)
 
         if self.cast_type == 3:
-            if not self.searching:
+            if self.state != 'cast':
                 #start timer
                 self.timer = self.Timer(self.T,self.duration)
                 self.searching = True
@@ -833,7 +830,7 @@ class moth_modular(object):
             elif not self.timer.is_running(self.T):
                 self.change_direction()
                 self.timer = self.Timer(self.T,self.duration)
-                self.duration *= 3
+                self.duration *= 1.5
                 print self.duration
             self.calculate_wind_angle(wind_vel_at_pos)
             self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
@@ -869,7 +866,7 @@ class moth_modular(object):
     
                                      
     def update(self,conc_array,wind_vel_at_pos,dt):
-        if self.T == 0: #in case we adjust the system to start with casting
+        if self.T == 0: #because we want to start by casting
             self.smell_timer = self.Timer(self.T,dt)#start timer just not to bug out things later
             self.Tfirst = 0
         if self.is_smelling(conc_array):
