@@ -322,7 +322,7 @@ def moth_demo(dt=0.01, t_max = 15, draw_iter_interval=20):
     nav,cast,wait
     benelli - 2,3,1
     Liberzon - 'alex',2,1
-    large sweeps - 2, 'carde2',1
+    large sweeps - 1, 'carde2',1
 
     """
     #moth_model.speed = moth_model.speed*0.5
@@ -331,9 +331,9 @@ def moth_demo(dt=0.01, t_max = 15, draw_iter_interval=20):
     wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,char_time =6,amplitude=0.1)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
-                                    centre_rel_diff_scale=0.55,
+                                    centre_rel_diff_scale=0.3,
                                     puff_release_rate=100,
-                                    puff_init_rad=0.001,puff_spread_rate=0.0003)
+                                    puff_init_rad=0.001,puff_spread_rate=0.003)
 
     # set up figure
     fig, time_text = _set_up_figure('Moth flying in Concentration field')

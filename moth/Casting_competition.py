@@ -22,7 +22,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     navigator3 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'],cd['nav_type'] , 'carde2', cd['wait_type'])
     navigator4 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'],cd['nav_type'] , 'carde2', cd['wait_type'])
     navigator5 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'],cd['nav_type'] , 'carde2', cd['wait_type'])
-    navigators = [navigator1]
+    navigators = []
     
     ############################################################################
     #navigator setting for all navigators in the simulation
@@ -87,17 +87,12 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.wait_type = 1
             new_navigator.cast_type = 2
             new_navigator.nav_type = 'alex'
-            new_navigator.y = 450 - i*5
+            new_navigator.y = 450 - i*3
             new_navigator.x = 499 
-            new_navigator.base_duration  = 0.1 
-            new_navigator.threshold = 500
-            new_navigator.base_gamma = np.radians(90) 
-            new_navigator.alex_factor= j *0.5
-            #title = str(i) 
-            title = 'gamma- 90' \
+
+            title = '' \
                 +'; cast - ' + str(new_navigator.cast_type) \
                 + '; nav - ' + str(new_navigator.nav_type) \
-                + '; Alex_factor = ' + str(new_navigator.alex_factor)\
                 + ' ' + str(counter)
                 
             navigators.append(new_navigator)
@@ -108,18 +103,48 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
         for i in range(20):
             new_navigator = copy.copy(navigator1)
             new_navigator.wait_type = 1
-            new_navigator.cast_type = 1
+            new_navigator.cast_type = 3
             new_navigator.nav_type = 'alex'
-            new_navigator.y = 450 - i*5
+            new_navigator.y = 450 - i*3
             new_navigator.x = 499 
-            new_navigator.base_duration  = 0.1 
-            new_navigator.threshold = 500
-            new_navigator.alex_factor= j *0.5
-            #title = str(i) 
-            title = 'gamma- 80' \
+
+            title = '' \
                 +'; cast - ' + str(new_navigator.cast_type) \
                 + '; nav - ' + str(new_navigator.nav_type) \
-                + '; Alex_factor = ' + str(new_navigator.alex_factor)\
+                + ' ' + str(counter)
+                
+            navigators.append(new_navigator)
+            navigator_titles.append(title)
+            counter += 1
+
+    for j in range(10):
+        for i in range(20):
+            new_navigator = copy.copy(navigator1)
+            new_navigator.wait_type = 1
+            new_navigator.cast_type = 'carde2'
+            new_navigator.nav_type = 1
+            new_navigator.y = 450 - i*3
+            new_navigator.x = 499 
+            title = '' \
+                +'; cast - ' + str(new_navigator.cast_type) \
+                + '; nav - ' + str(new_navigator.nav_type) \
+                + ' ' + str(counter)
+                
+            navigators.append(new_navigator)
+            navigator_titles.append(title)
+            counter += 1
+
+    for j in range(10):
+        for i in range(20):
+            new_navigator = copy.copy(navigator1)
+            new_navigator.wait_type = 1
+            new_navigator.cast_type = 'carde1'
+            new_navigator.nav_type = 1
+            new_navigator.y = 450 - i*3
+            new_navigator.x = 499 
+            title = '' \
+                +'; cast - ' + str(new_navigator.cast_type) \
+                + '; nav - ' + str(new_navigator.nav_type) \
                 + ' ' + str(counter)
                 
             navigators.append(new_navigator)

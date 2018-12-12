@@ -831,7 +831,6 @@ class moth_modular(object):
                 self.change_direction()
                 self.timer = self.Timer(self.T,self.duration)
                 self.duration *= 1.5
-                print self.duration
             self.calculate_wind_angle(wind_vel_at_pos)
             self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
             self.v = self.speed*np.sin(self.gamma+self.wind_angle)

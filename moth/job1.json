@@ -1,0 +1,1 @@
+{"x_start": 100, "puff_release_rate": 100, "wait_type": 1, "base_turn_angle": 18, "char_time": 3.5, "duration": 0.2, "nav_type": "alex", "amplitude": 0.05, "y_start": 500, "threshold": 1800, "t_max": 25, "dt": 0.01, "num_it": 1}
