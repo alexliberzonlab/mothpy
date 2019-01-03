@@ -27,7 +27,9 @@ from shapes import circle,square , cx ,cy
   
 def moth_simulation(num_it=10,navigators = (),t_max = 1,
                     char_time=3.5, amplitude = 0.1 ,
-                    dt=0.01, puff_release_rate=10,draw_iter_interval = 1 ,
+                    dt=0.01, puff_release_rate=10,
+                    puff_spread_rate = 0.001,
+                    draw_iter_interval = 1 ,
                     prep_plume = False):
     """
     a copy of the concetration_array_demo with the moth actions integrated
@@ -57,10 +59,12 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
     wind_model = models.WindModel(wind_region, 21, 11,1,char_time,amplitude)
     # set up plume model
     pfr = puff_release_rate
+    psr = puff_spread_rate
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
                                     centre_rel_diff_scale=0.75,
                                     puff_release_rate = pfr,
-                                    puff_init_rad=0.001)
+                                    puff_init_rad=0.001,
+                                    puff_spread_rate=psr)
 
     #set concetration array generator
     array_gen = processors.ConcentrationArrayGenerator(sim_region, 0.01, 500,
@@ -146,10 +150,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
                             turning = True
                         else:
                             turning = False
-                        
-                        
-                    
-                    diff_list.append((x,y,T,odor,turning,success))
+                    diff_list.append((x,y,T,odor,turning,state,success))
             diff_dict["diff_list{0}".format(i)] = diff_list
         diff_dict_lst.append(diff_dict)
       

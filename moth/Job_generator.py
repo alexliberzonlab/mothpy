@@ -3,7 +3,7 @@ import json
 
 def generate_job(char_time =3.5,amplitude =0.1,
                  job_file='job.json', puff_release_rate = 10,
-                  t_max =75., dt = 0.01,num_it =1, base_duration =0.2):
+                  t_max =75., dt = 0.01,num_it =1, base_duration =0.2, puff_spread_rate =0.001):
     const_dict={}
 
     #simulation
@@ -17,6 +17,7 @@ def generate_job(char_time =3.5,amplitude =0.1,
 
     #plume source
     const_dict['puff_release_rate'] = puff_release_rate
+    const_dict['puff_spread_rate'] = puff_spread_rate
     
 
     #navigators

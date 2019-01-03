@@ -16,13 +16,13 @@ plots a single plot for each one
 """
 
 if __name__ == "__main__":
-    for i in range(10):
+    for i in range(4):
         job_file_name = 'job'+ str(i)+ '.json'
         data_file_name = 'data'+ str(i)+ '.json'
         #titles_file_name = 'titles'+ str(i)+ '.json'       
-        generate_job(char_time = 3.5, amplitude =0.05*i, job_file = job_file_name,
-                     t_max =25, puff_release_rate = 100,
-                     dt = 0.01, num_it = 1)
+        generate_job(char_time = 3.5, amplitude =0.08*(1+i), job_file = job_file_name,
+                     t_max =20, puff_release_rate = 100,
+                     dt = 0.02, num_it = 1,puff_spread_rate =0.003)
         navigator_titles = create_trajectory_data(job_file_name,data_file_name)
         title = 'loop ' +str(i) 
         #save_plot(job_file_name,data_file_name,title,navigator_titles)
