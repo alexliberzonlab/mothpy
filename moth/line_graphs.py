@@ -85,8 +85,7 @@ if __name__ == "__main__":
     plt.legend(legends)
     plt.show()
     """
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    fig,ax = plt.subplots()
 
     n_groups = 4
     bar_width = 0.3
