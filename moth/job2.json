@@ -1,1 +1,3 @@
-{"x_start": 100, "puff_release_rate": 100, "wait_type": 1, "base_turn_angle": 18, "char_time": 3.5, "duration": 0.2, "nav_type": "alex", "amplitude": 0.1, "y_start": 500, "threshold": 1800, "t_max": 25, "dt": 0.01, "num_it": 1}
+version https://git-lfs.github.com/spec/v1
+oid sha256:e7e0ce8f45698102d6b50adad64338fd6e5b10676343c091e71e7630804e471f
+size 255
