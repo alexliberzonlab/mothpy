@@ -74,7 +74,8 @@ def average_time_relative(dict_list):
     ##(x,y,T,odor,gamma,state,success)
     def first_movement(diff_list):
         for i in range(len(diff_list)):
-            if diff_list[i][5] != 'wait'
+            if diff_list[i][5] != 'wait':
+                #print 'state = '+ diff_list[i][5]
                 return i
 
     def calc_speed(diff_list):
@@ -86,7 +87,7 @@ def average_time_relative(dict_list):
         dist = distance(x1,y1,x2,y2)
         dt = diff_list[i+1][2] - diff_list[i][2]
         speed = dist/dt
-            return speed
+        return speed
 
     def optimal_time(diff_list):
         x1 = diff_list[0][0]
@@ -98,7 +99,7 @@ def average_time_relative(dict_list):
         speed = calc_speed(diff_list)
         optimal_time = opt_dist/speed
 
-        return optimal time
+        return optimal_time
         
     def distance(x1,y1,x2,y2):
        x = x2-x1
@@ -112,6 +113,7 @@ def average_time_relative(dict_list):
         y2 = diff_list[-1][1]
         return distance(x1,y1,x2,y2)
     
+    
     def traveled_distance(diff_list):
         dist_sum = 0.0
         for i in range(1,len(diff_list)):
@@ -122,16 +124,27 @@ def average_time_relative(dict_list):
                 y2 = diff_list[i][1]
                 dist_sum += distance(x1,y1,x2,y2)
         return dist_sum
+
+    def time_elasped(diff_list):
+        i = first_movement(diff_list)
+        time_ela = diff_list[i][2]-diff_list[-1][2]
+        return time_ela
                 
     times_list = []
     for diff_dict in dict_list:
-        diff_list = diff_dict["diff_list{0}".format(0)]
-        if diff_list[-1][-1]:
-            optimal = optimal_distance(diff_list)
-            traveled = traveled_distance(diff_list)
-            #print (optimal,traveled)
-            relative_time = traveled/optimal
-            times_list.append(relative_time)
+        for key in diff_dict:
+            diff_list = diff_dict[key]
+            if diff_list[-1][-1]:
+                """
+                optimal = optimal_distance(diff_list)
+                traveled = traveled_distance(diff_list)
+                #print (optimal,traveled)
+                relative_time = traveled/optimal
+                """
+                elasped = time_elasped(diff_list)
+                optimal = optimal_time(diff_list)
+                relative_time = elasped/optimal
+                times_list.append(math.fabs(relative_time))
 
     #print times_list
     if len(times_list) != 0:
