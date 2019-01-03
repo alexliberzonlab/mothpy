@@ -14,17 +14,14 @@ __authors__ = 'Noam Benelli'
 
 
 def create_line_graphs(tot_stats,int_loop):
-    nav_titles = ('Liberzon','Benelli','Large Final Sweeps','Final Sweeps')
-    colors = ('green','red','blue','yellow')
-    loop = str(int_loop)
-    data1 = tot_stats[0]
-    data2 = tot_stats[1]
-    data3 = tot_stats[2]
-    data4 = tot_stats[3]
+    # nav_titles = ('Liberzon','Benelli','Large Final Sweeps','Final Sweeps')
+    # colors = ('green','red','blue','yellow')
+    # loop = str(int_loop)
 
-    for i in range(4):
-        plt.plot(tot_stats[i])
-        plt.ylabel('')
+    plt.figure()
+    for stats in tot_stats:
+        plt.plot(stats)
+        # plt.ylabel('')
 
 def detect_change(job_list):
     for key in job_list[0]:
