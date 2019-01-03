@@ -4,7 +4,7 @@ an illustration of how a single navigator types stats
 """
 
 from __future__ import division
-from bars_copy import calc_stats,get_data, succuss_precentage,\
+from bars import calc_stats,get_data, succuss_precentage,\
      average_time, search_efficiency
 import json
 import matplotlib.pyplot as plt

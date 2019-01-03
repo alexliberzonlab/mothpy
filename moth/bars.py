@@ -294,17 +294,17 @@ def check_for_duds():
         for key in nav_dict:
             #(x,y,T,odor,gamma,state,success)
             if nav_dict[key][-1][-2] == 'wait':
-                print 'dud found'
+                print('dud found')
                 dud_number +=1
             else:
-                print nav_dict[key][-1][-2]
-    print dud_number
+                print(nav_dict[key][-1][-2])
+    print(dud_number)
                 
 if __name__ == "__main__":
     #check_for_duds()
     for i in range(1):
         loop = str(i)
         data_list = get_data('data'+loop+'.json',4)
-        print data_list[0]
+        print(data_list[0])
         #create_graphs(data_list,loop)
 
