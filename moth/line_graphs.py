@@ -94,10 +94,11 @@ if __name__ == "__main__":
     data2 =(lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2])
     data3 =(lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3])
 
-    chart = plt.bar(index, data0, bar_width, color='blue', edgecolor='black')
-    chart = plt.bar(index+bar_width, data1, bar_width, color='red', edgecolor='black')
-    chart = plt.bar(index+2*bar_width, data2, bar_width, color='green', edgecolor='black')
-    chart = plt.bar(index+3*bar_width, data3, bar_width, color='yellow', edgecolor='black')
+    chart = plt.bar(index, data0, bar_width,color = 'white', hatch = '/', edgecolor='black')
+    chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '|' ,edgecolor='black')
+    chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '-', edgecolor='black')
+    chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'white', hatch = '*', edgecolor='black')
+
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Success (%)')
@@ -127,10 +128,11 @@ if __name__ == "__main__":
     data2 =(lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
     data3 =(lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3])
     
-    chart = plt.bar(index, data0, bar_width, color='blue', edgecolor='black')
-    chart = plt.bar(index+bar_width, data1, bar_width, color='red', edgecolor='black')
-    chart = plt.bar(index+2*bar_width, data2, bar_width, color='green', edgecolor='black')
-    chart = plt.bar(index+3*bar_width, data3, bar_width, color='yellow', edgecolor='black')
+    chart = plt.bar(index, data0, bar_width,color = 'white', hatch = '/', edgecolor='black')
+    chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '|' ,edgecolor='black')
+    chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '-', edgecolor='black')
+    chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'white', hatch = '*', edgecolor='black')
+
 
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     #ax.set_title('Average Navigation Time vs '+ xlabel)
@@ -159,10 +161,11 @@ if __name__ == "__main__":
     data2 =(lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
     data3 =(lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3])
     
-    chart = plt.bar(index, data0, bar_width, color='blue', edgecolor='black')
-    chart = plt.bar(index+bar_width, data1, bar_width, color='red', edgecolor='black')
-    chart = plt.bar(index+2*bar_width, data2, bar_width, color='green', edgecolor='black')
-    chart = plt.bar(index+3*bar_width, data3, bar_width, color='yellow', edgecolor='black')
+    chart = plt.bar(index, data0, bar_width,color = 'white', hatch = '/', edgecolor='black')
+    chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '|' ,edgecolor='black')
+    chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '-', edgecolor='black')
+    chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'white', hatch = '*', edgecolor='black')
+
     
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     ax.set_title('Navigation Efficiency vs '+ xlabel)
