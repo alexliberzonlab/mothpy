@@ -68,20 +68,7 @@ if __name__ == "__main__":
     lfs_succ, lfs_avg, lfs_efficiency = zip(*lfslist)
     fs_succ, fs_avg,fs_efficiency = zip(*fslist)
 
-    # create first graph
-    """
-    plt.plot(values,lib_succ)
-    plt.plot(values,Bene_succ)
-    plt.plot(values,lfslist_succ)
-    plt.plot(values,fslist_succ)
 
-    plt.xlabel(xlabel)
-    plt.ylabel('Success (%)')
-
-    plt.title('Success Percentage vs '+ xlabel)
-    plt.legend(legends)
-    plt.show()
-    """
     fig,ax = plt.subplots()
 
     n_groups = 4
@@ -93,12 +80,13 @@ if __name__ == "__main__":
     data1 =(lib_succ[1],Bene_succ[1],lfs_succ[1],fs_succ[1])
     data2 =(lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2])
     data3 =(lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3])
-
-    chart = plt.bar(index, data0, bar_width,color = 'white', hatch = '/', edgecolor='black')
-    chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '|' ,edgecolor='black')
-    chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '-', edgecolor='black')
-    chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'white', hatch = '*', edgecolor='black')
-
+    def set_charts():
+        global chart
+        chart = plt.bar(index, data0, bar_width,color = 'white', edgecolor='black')
+        chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '+' ,edgecolor='black')
+        chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '\\', edgecolor='black')
+        chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'black', hatch = '*', edgecolor='black')
+    set_charts()
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Success (%)')
@@ -128,10 +116,7 @@ if __name__ == "__main__":
     data2 =(lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
     data3 =(lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3])
     
-    chart = plt.bar(index, data0, bar_width,color = 'white', hatch = '/', edgecolor='black')
-    chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '|' ,edgecolor='black')
-    chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '-', edgecolor='black')
-    chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'white', hatch = '*', edgecolor='black')
+    set_charts()
 
 
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
@@ -142,36 +127,21 @@ if __name__ == "__main__":
 
     
     #create third graph
-    """ 
-    plt.plot(values,lib_efficiency)
-    plt.plot(values,Bene_efficiency)
-    plt.plot(values,lfslist_efficiency)
-    plt.plot(values,fslist_efficiency)
-    """
+"""
     plt.xlabel(xlabel)
     plt.ylabel('Navigation Efficiency(ratio)')
-    """
-    plt.title('Navigation Efficiency vs ' + xlabel)
-    plt.legend(legends)
-    plt.show()
-    """
     
     data0 =(lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0])
     data1 =(lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1])
     data2 =(lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
     data3 =(lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3])
-    
-    chart = plt.bar(index, data0, bar_width,color = 'white', hatch = '/', edgecolor='black')
-    chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '|' ,edgecolor='black')
-    chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '-', edgecolor='black')
-    chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'white', hatch = '*', edgecolor='black')
-
+    set_charts()
     
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     ax.set_title('Navigation Efficiency vs '+ xlabel)
     plt.legend(legends)
     plt.show()
-    
+"""   
 
     
     

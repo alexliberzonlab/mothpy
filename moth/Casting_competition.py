@@ -159,8 +159,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     #run the simulation - each navigator runs through the exact same conditions
     dict_list = moth_simulation(cd['num_it'],
                                 navigators,cd['t_max'],cd['char_time'],
-                                cd['amplitude'], cd['dt'],
-                                cd['puff_release_rate'],
+                                cd['amplitude'], cd['dt'], cd['puff_release_rate'],
                                 cd['puff_spread_rate'],
                                 1,
                                 False)
@@ -168,6 +167,10 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
 
     with open(data_file_name, 'w') as outfile:
         json.dump(dict_list, outfile)
+
+
+        
+
     #print dict_list
     return navigator_titles
 
