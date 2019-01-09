@@ -90,10 +90,11 @@ if __name__ == "__main__":
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Success (%)')
-    ax.set_title('Success Percentage vs '+ xlabel)
+    #ax.set_title('Success Percentage vs '+ xlabel)
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     plt.legend(legends)
     plt.tight_layout()
+    plt.savefig('Success Percentage vs '+ xlabel)
     plt.show()
 
     #create second graph
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     plt.xlabel(xlabel)
     plt.ylabel('Average Navigation Time (ratio)')
     
-    plt.title('Average Navigation Time vs ' + xlabel)
+    #plt.title('Average Navigation Time vs ' + xlabel)
     """
     plt.legend(legends)
     plt.show()
@@ -122,8 +123,9 @@ if __name__ == "__main__":
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     #ax.set_title('Average Navigation Time vs '+ xlabel)
     plt.legend(legends)
+    plt.savefig('Average Navigation Time vs '+ xlabel)
     plt.show()
-
+    
 
     
     #create third graph
