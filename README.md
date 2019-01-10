@@ -14,7 +14,6 @@ concentration fields spread in turbulent flows
     Scipy
     Matplotlib
 
-
 ### Example usage
 
 ``` 
@@ -22,5 +21,21 @@ concentration fields spread in turbulent flows
 python compare\ navigators\ in\ different\ wind\ conditions.py
 
 ```
+
+![Demo flight](moth/demo.png)
+
+
+
+
+
+
+
+## How to build the figures for the paper
+
+1. Run the ...
+2. Change the file ...
+3. 
+
+The output should look like this: 
 
 ![Demo flight](moth/demo.png)
