@@ -1,13 +1,4 @@
-
-pompy.egg-info/top_level.txt
-pompy.egg-info/SOURCES.txt
-pompy.egg-info/PKG-INFO
-pompy.egg-info/dependency_links.txt
-plume2.mp4
-plume.mp4
-dist/pompy-0.0.0-py2.7.egg
-build/lib/pompy/processors.py
-build/lib/pompy/models.py
-build/lib/pompy/demos.py
-build/lib/pompy/__init__.py
-.vscode/settings.json
+build/*
+dist/*
+pompy.egg*
+*.pyc
