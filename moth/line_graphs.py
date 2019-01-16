@@ -7,10 +7,14 @@ from __future__ import division
 from bars import calc_stats,get_data, succuss_precentage,\
      average_time, search_efficiency
 import json
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
 __authors__ = 'Noam Benelli'
+
+matplotlib.rc('xtick', labelsize=15) 
+matplotlib.rc('ytick', labelsize=15)
 
 
 def create_line_graphs(tot_stats,int_loop):
@@ -90,28 +94,30 @@ if __name__ == "__main__":
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Success (%)')
+    ax.xaxis.label.set_fontsize(17)
+    ax.yaxis.label.set_fontsize(17)
     #ax.set_title('Success Percentage vs '+ xlabel)
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     plt.legend(legends)
     plt.tight_layout()
     plt.savefig('Success Percentage vs '+ xlabel)
     plt.show()
-
+    
     #create second graph
-    """
-    plt.plot(values,lib_avg)
-    plt.plot(values,Bene_avg)
-    plt.plot(values,lfslist_avg)
-    plt.plot(values,fslist_avg)
-    """
+    fig,ax = plt.subplots()
+
+    n_groups = 4
+    bar_width = 0.3
+    opacity = 0.4
+    index = np.arange(0, 2*n_groups, 2)
+    
     plt.xlabel(xlabel)
     plt.ylabel('Average Navigation Time (ratio)')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel('Success (%)')
+
     
     #plt.title('Average Navigation Time vs ' + xlabel)
-    """
-    plt.legend(legends)
-    plt.show()
-    """
     data0 =(lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0])
     data1 =(lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1])
     data2 =(lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
@@ -119,33 +125,17 @@ if __name__ == "__main__":
     
     set_charts()
 
-
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     #ax.set_title('Average Navigation Time vs '+ xlabel)
+    ax.xaxis.label.set_fontsize(17)
+    ax.yaxis.label.set_fontsize(17)
     plt.legend(legends)
     plt.savefig('Average Navigation Time vs '+ xlabel)
     plt.show()
     
 
     
-    #create third graph
-"""
-    plt.xlabel(xlabel)
-    plt.ylabel('Navigation Efficiency(ratio)')
-    
-    data0 =(lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0])
-    data1 =(lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1])
-    data2 =(lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
-    data3 =(lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3])
-    set_charts()
-    
-    plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
-    ax.set_title('Navigation Efficiency vs '+ xlabel)
-    plt.legend(legends)
-    plt.show()
-"""   
 
-    
     
 
     
