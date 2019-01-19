@@ -18,7 +18,7 @@ concentration fields spread in turbulent flows
 
 ``` 
 
-python compare\ navigators\ in\ different\ wind\ conditions.py
+python compare_navigators_in_different_wind_conditions.py
 
 ```
 
