@@ -15,7 +15,6 @@ sns.set(style="darkgrid")
 __authors__ = 'Noam Benelli'
 
 
-
 def search_efficiency(dict_list):
     #calculate the ratio of time in which odor was detected/all of the flight time
     search_efficincy_list = []
@@ -258,30 +257,9 @@ def create_graphs(tot_stats,int_loop):
     plt.savefig(title +loop+'.png')
     #plt.show()
 
-def multi_splice(list_dict,n):
-    length =len(list_dict)
-    if length%n != 0:
-        raise Exception('Number of navigators could not be devided into %0.1i' %n)
-    spliced_lists = []
-    lenn = int(length/n)
-    for i in range(n):
-        if i ==0 :
-            new_list = list_dict[:lenn]
-        elif i == n-1:
-            new_list = list_dict[i*lenn:]
-        else:
-            new_list = list_dict[lenn*i:lenn*(i+1)]
-        spliced_lists.append(new_list)
-    return spliced_lists
 
-def get_data(file_name,num):
-    with open(file_name) as data_file1:  
-        dict_list1 = json.load(data_file1)
 
-    spliced_lists = multi_splice(dict_list1,num)
-    data_list = [calc_stats(dict_list) for dict_list in spliced_lists]
 
-    return data_list
     
 def check_for_duds():
     #checks for the numer of navigators that have not moved for the entire simulation

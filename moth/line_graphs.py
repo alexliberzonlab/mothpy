@@ -10,6 +10,7 @@ import json
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 __authors__ = 'Noam Benelli'
 
@@ -27,25 +28,9 @@ def create_line_graphs(tot_stats,int_loop):
         plt.plot(stats)
         # plt.ylabel('')
 
-def detect_change(job_list):
-    for key in job_list[0]:
-        if job_list[0][key] != job_list[1][key]:
-            sig_key = key
-            break
-    value_list =[]
-    for job in job_list:
-        value_list.append(job[sig_key])
-        
-    return (sig_key, value_list)
 
-def process_jobs(num_jobs):
-    job_list = []
-    for i in range(num_jobs):
-        file_name = 'job'+str(i)+'.json'
-        with open(file_name) as data_file1:  
-            job = json.load(data_file1)
-        job_list.append(job)
-    return detect_change(job_list)
+
+
 
 
         
