@@ -62,3 +62,58 @@ The output should look like this:
 
 ![Success Percentage vs Puff Spread Rate](moth/spVSpsr.png)
 ![Average Navigation Time vs Puff Spread Rate](moth/spVSpsr.png)
+
+## how to manage and design navigators
+### initiating  a navigator
+Let us look at this example from the casting_competition file:
+```
+navigator1 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'], cd['nav_type'] , cd['cast_type'], cd['wait_type'])
+```
+The navigator is initiated with it's initial x and y coordinates and the modes of navigating, casting and waiting. 
+### wait, cast and nav types
+A navigator is an object of the ```moth_modular``` class. It has an attribute to define each movement type, ```wait_type, cast_type, nav_type```. 
+The attribute itself can be an integer or a string, it doesn't matter, but it should correlate to a signifier inside of the corresponding function. For example, let's look at the casting function -
+```
+def cast(self,wind_vel_at_pos):
+        if self.state != 'cast' :
+            #if this is the beginging of a new casting phase
+            self.change_direction()
+            
+        if self.cast_type == 0:
+            self.u=0
+            self.v=0
+            
+        if self.cast_type == 1:
+            self.calculate_wind_angle(wind_vel_at_pos)
+            self.u = -self.speed*np.cos(self.gamma+self.wind_angle)
+            self.v = self.speed*np.sin(self.gamma+self.wind_angle)
+
+        if self.cast_type == 2:
+            #define different betas for different casting patterns
+            self.cast2(wind_vel_at_pos)
+```
+The function, like all movement functions, takes as input the parameters of the navigator and the wind velocity at the position (as calculated by the wind model).
+The first conditional changes the direction of casting from the previous direction. This has nothing to with the cast type. 
+The second, third and fourth conditionals are dependant on the cast type, and use it as an indicator as to how to move. Note that the function can call upon other functions. The stracture of the ```wait``` and ```navigate``` are very similar - The function sets the velocity (u,v) of the navigator. The actual time step is performed in the update function.
+#### defining new movement types
+In order to create a new waiting, casting or navigation, first enter the models file. For example, let's say we would like to design a new waiting mode. First, we sould define a condition within the waiting function. 
+```
+    def wait(self,wind_vel_at_pos):
+        if wait_type == 'example wait type':
+```
+Now, if the navigator was initiated to so its wait type attribute is 'example wait type' the wait function will be directed into the actions we define under that conditional. Secondly, define the changes in you would like to be made to the velocity of the navigator:
+```
+    def wait(self,wind_vel_at_pos):
+        if wait_type == 'example wait type':
+            u *= 1.1
+            v *= 1.1
+```
+The same approach should be applied to any of the movement functions. 
+After we defined the new conditional, we can use it when initiatin a new navigator:
+
+```
+navigator1 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'], cd['nav_type'] , cd['cast_type'], 'example wait type')
+```
+
+ 
+
