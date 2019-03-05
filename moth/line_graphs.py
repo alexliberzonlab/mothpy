@@ -79,18 +79,19 @@ if __name__ == "__main__":
     bar_width = 0.3
     opacity = 0.4
     index = np.arange(0, 2*n_groups, 2)
-    
+    """
     data0 =(lib_succ[0],Bene_succ[0],lfs_succ[0],fs_succ[0])
     data1 =(lib_succ[1],Bene_succ[1],lfs_succ[1],fs_succ[1])
     data2 =(lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2])
     data3 =(lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3])
-    def set_charts():
+    """
+    def set_charts(data0,data1,data2,data3):
         global chart
         chart = plt.bar(index, data0, bar_width,color = 'white', edgecolor='black')
         chart = plt.bar(index+bar_width, data1, bar_width,color = 'white', hatch = '+' ,edgecolor='black')
         chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '\\', edgecolor='black')
         chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'black', hatch = '*', edgecolor='black')
-    set_charts()
+    set_charts(lib_succ,Bene_succ,lfs_succ,fs_succ)
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Success (%)')
@@ -111,19 +112,14 @@ if __name__ == "__main__":
     opacity = 0.4
     index = np.arange(0, 2*n_groups, 2)
     
-    plt.xlabel(xlabel)
-    plt.ylabel('Average Navigation Time (ratio)')
+    #plt.xlabel(xlabel)
+    #plt.ylabel('Average Navigation Time (ratio)')
     ax.set_xlabel(xlabel)
-    ax.set_ylabel('Success (%)')
+    ax.set_ylabel('Average Navigation Time (ratio)')
 
     
     #plt.title('Average Navigation Time vs ' + xlabel)
-    data0 =(lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0])
-    data1 =(lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1])
-    data2 =(lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
-    data3 =(lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3])
-    
-    set_charts()
+    set_charts(lib_avg,Bene_avg,lfs_avg,fs_avg)
 
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     #ax.set_title('Average Navigation Time vs '+ xlabel)
