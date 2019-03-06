@@ -81,6 +81,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             navigator_titles.append(title)
             counter += 1
     """
+    
     for j in range(10):
         for i in range(20):
             new_navigator = copy.copy(navigator1)
@@ -88,7 +89,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.cast_type = 2
             new_navigator.nav_type = 'alex'
             new_navigator.y = 450 - i*3
-            new_navigator.x = 499 
+            new_navigator.x = 499 - j
 
             title = '' \
                 +'; cast - ' + str(new_navigator.cast_type) \
@@ -106,7 +107,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.cast_type = 3
             new_navigator.nav_type = 'alex'
             new_navigator.y = 450 - i*3
-            new_navigator.x = 499 
+            new_navigator.x = 499 - j
 
             title = '' \
                 +'; cast - ' + str(new_navigator.cast_type) \
@@ -124,7 +125,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.cast_type = 'carde2'
             new_navigator.nav_type = 1
             new_navigator.y = 450 - i*3
-            new_navigator.x = 499 
+            new_navigator.x = 499 - j
             title = '' \
                 +'; cast - ' + str(new_navigator.cast_type) \
                 + '; nav - ' + str(new_navigator.nav_type) \
@@ -141,7 +142,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
             new_navigator.cast_type = 'carde1'
             new_navigator.nav_type = 1
             new_navigator.y = 450 - i*3
-            new_navigator.x = 499 
+            new_navigator.x = 499 - j 
             title = '' \
                 +'; cast - ' + str(new_navigator.cast_type) \
                 + '; nav - ' + str(new_navigator.nav_type) \
