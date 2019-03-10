@@ -2,3 +2,4 @@ build/*
 dist/*
 pompy.egg*
 *.pyc
+.ipynb_checkpoints/mothpy_getting_started-checkpoint.ipynb
