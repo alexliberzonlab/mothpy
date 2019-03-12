@@ -3,3 +3,4 @@ dist/*
 pompy.egg*
 *.pyc
 .ipynb_checkpoints/*
+data*.json
