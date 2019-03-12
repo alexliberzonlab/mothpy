@@ -1,4 +1,4 @@
-`moth` is a NumPy based implementation of moth-inspired navigation strategies that uses 
+`mothpy` is a NumPy based implementation of moth-inspired navigation strategies that uses 
 `pompy` library to create the puff, wind and concentration models. see `pompy/Readme.md` 
 for details
 
@@ -13,6 +13,7 @@ concentration fields spread in turbulent flows
     Numpy
     Scipy
     Matplotlib
+    Pompy
 
 ### Example usage
 
@@ -63,6 +64,7 @@ The output should look like this:
 ![Success Percentage vs Puff Spread Rate](moth/spVSpsr.png)
 ![Average Navigation Time vs Puff Spread Rate](moth/spVSpsr.png)
 
+
 ## how to manage and design navigators
 ### initiating  a navigator
 Let us look at this example from the casting_competition file:
@@ -98,8 +100,12 @@ The second, third and fourth conditionals are dependant on the cast type, and us
 #### defining new movement types
 In order to create a new waiting, casting or navigation, first enter the models file. For example, let's say we would like to design a new waiting mode. First, we sould define a condition within the waiting function. 
 ```
+<<<<<<< HEAD
     def wait(self,wind_vel_at_pos):
         if wait_type == 'example wait type':
+=======
+pip install pompy
+>>>>>>> 8bba8138c43800e22ddc23107f10b06e5df69860
 ```
 Now, if the navigator was initiated to so its wait type attribute is 'example wait type' the wait function will be directed into the actions we define under that conditional. Secondly, define the changes in you would like to be made to the velocity of the navigator:
 ```
@@ -114,6 +120,3 @@ After we defined the new conditional, we can use it when initiatin a new navigat
 ```
 navigator1 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'], cd['nav_type'] , cd['cast_type'], 'example wait type')
 ```
-
- 
-
