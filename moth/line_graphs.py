@@ -92,8 +92,10 @@ if __name__ == "__main__":
         chart = plt.bar(index+2*bar_width, data2, bar_width,color = 'white', hatch = '\\', edgecolor='black')
         chart = plt.bar(index+3*bar_width, data3, bar_width,color = 'black', hatch = '*', edgecolor='black')
     set_charts(lib_succ,Bene_succ,lfs_succ,fs_succ)
-
-    ax.set_xlabel(xlabel)
+    if xlabel == 'puff_spread_rate':
+        ax.set_xlabel(r'$\sigma$')
+    else:
+        ax.set_xlabel(xlabel)
     ax.set_ylabel('Success (%)')
     ax.xaxis.label.set_fontsize(17)
     ax.yaxis.label.set_fontsize(17)
@@ -101,6 +103,8 @@ if __name__ == "__main__":
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     plt.legend(legends)
     plt.tight_layout()
+
+
     plt.savefig('Success Percentage vs '+ xlabel)
     plt.show()
     
@@ -114,13 +118,16 @@ if __name__ == "__main__":
     
     #plt.xlabel(xlabel)
     #plt.ylabel('Average Navigation Time (ratio)')
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel('Average Navigation Time (ratio)')
+    if xlabel == 'puff_spread_rate':
+        ax.set_xlabel(r'$\sigma$')
+    else:
+        ax.set_xlabel(xlabel)
+    ax.set_ylabel('T/'+r'$\tau$')
 
     
-    #plt.title('Average Navigation Time vs ' + xlabel)
-    set_charts(lib_avg,Bene_avg,lfs_avg,fs_avg)
 
+    set_charts(lib_avg,Bene_avg,lfs_avg,fs_avg)
+    plt.subplots_adjust(bottom=0.15)
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     #ax.set_title('Average Navigation Time vs '+ xlabel)
     ax.xaxis.label.set_fontsize(17)

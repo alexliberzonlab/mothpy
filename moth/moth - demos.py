@@ -317,7 +317,7 @@ def moth_demo(dt=0.01, t_max = 15, draw_iter_interval=20):
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 4., 1.)
     #call moth model, set simulation region and starting position 
-    moth_model = models.moth_modular(sim_region, 450.0, 650.0,2, 'carde2',1)
+    moth_model = models.moth_modular(sim_region, 450.0, 750.0,2, 'carde2',1)
     """
     nav,cast,wait
     benelli - 2,3,1
@@ -326,14 +326,15 @@ def moth_demo(dt=0.01, t_max = 15, draw_iter_interval=20):
 
     """
     #moth_model.speed = moth_model.speed*0.5
+    #moth_model.lamda =0.7
     
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,char_time =6,amplitude=0.1)
+    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=1.,char_time =6,amplitude=0.3)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
                                     centre_rel_diff_scale=0.3,
                                     puff_release_rate=100,
-                                    puff_init_rad=0.001,puff_spread_rate=0.003)
+                                    puff_init_rad=0.001,puff_spread_rate=0.0001)
 
     # set up figure
     fig, time_text = _set_up_figure('Moth flying in Concentration field')
