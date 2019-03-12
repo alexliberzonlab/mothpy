@@ -26,12 +26,13 @@ def generate_job(char_time =3.5,amplitude =0.1,
     const_dict['nav_type'] = 'alex'
     const_dict['wait_type'] = 1
     const_dict['base_turn_angle'] = 18 #for crw
-    const_dict['threshold'] = 1800
+    const_dict['threshold'] = 500
     const_dict['duration'] = base_duration
     
     
     
     
+
 
     with open(job_file, 'w') as outfile:
         json.dump(const_dict, outfile)
