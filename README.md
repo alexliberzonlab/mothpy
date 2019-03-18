@@ -13,6 +13,7 @@ concentration fields spread in turbulent flows
     Numpy
     Scipy
     Matplotlib
+    pompy 
 
 ### Example usage
 
