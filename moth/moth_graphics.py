@@ -84,6 +84,6 @@ def detection_plot(kalman_dict, title = 'det plot'):
     #pylab.show()
     pylab.savefig(str(title) + '.png')
     pylab.clf() 
-    print "done"
+    print("done")
 
 
