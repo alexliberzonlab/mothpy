@@ -4,8 +4,7 @@ an illustration of how a single navigator types stats
 """
 
 from __future__ import division
-from bars import calc_stats,get_data, succuss_precentage,\
-     average_time, search_efficiency
+from bars import get_data
 import json
 import matplotlib
 import matplotlib.pyplot as plt
@@ -50,7 +49,8 @@ def process_jobs(num_jobs):
 
         
    
-if __name__ == "__main__":
+
+def present_graphs():
     num_jobs = 4
     (xlabel,values)=process_jobs(num_jobs)
     legends = ('A','B','C','D')
@@ -125,7 +125,6 @@ if __name__ == "__main__":
     ax.set_ylabel('T/'+r'$\tau$')
 
     
-
     set_charts(lib_avg,Bene_avg,lfs_avg,fs_avg)
     plt.subplots_adjust(bottom=0.15)
     plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
@@ -136,6 +135,8 @@ if __name__ == "__main__":
     plt.savefig('Average Navigation Time vs '+ xlabel)
     plt.show()
     
+if __name__ == "__main__":
+	present_graphs()
 
     
 
