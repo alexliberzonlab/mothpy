@@ -26,7 +26,7 @@ if __name__ == "__main__":
                      dt = 0.01, num_it = 1)
         navigator_titles = create_trajectory_data(job_file_name,data_file_name)
         title = 'loop ' +str(i) 
-        save_plot(job_file_name,data_file_name,title,navigator_titles)
+        #save_plot(job_file_name,data_file_name,title,navigator_titles)
         #save_detection_plot(job_file_name,data_file_name,navigators_titles)
         print ('finished simulation number ' + str(i+1))
 
