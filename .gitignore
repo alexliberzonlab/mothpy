@@ -6,3 +6,4 @@ pompy.egg*
 moth/data*.json
 data*.json
 moth/*cast*.png
+docs/_build/
