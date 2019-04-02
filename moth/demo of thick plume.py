@@ -68,7 +68,7 @@ def concentration_array_demo(psr,dt=0.01, t_max=3.5, draw_iter_interval=50):
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 2., 1.)
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=2,)
+    wind_model = models.WindModel(wind_region, 21, 11,noise_gain=0, u_av=2,)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
                                     centre_rel_diff_scale=1.5,
