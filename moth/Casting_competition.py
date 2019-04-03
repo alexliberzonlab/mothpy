@@ -1,34 +1,13 @@
 from __future__ import division
 
 __authors__ = 'Noam Benelli'
-from pompy import models
-import mothpy_models
+import models
 from simulation import moth_simulation
 #from statistics import calc_stats
 import json
 import copy
 
-def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json',
-                           titles_file_name = 'titles.json'):
-    with open(job_file_name) as data_file:
-        cd = json.load(data_file) #constants dictionary
-    sim_region = models.Rectangle(0., 4.,-1., 1.)
-
-
-    #call the base navigator. the competing navigators in the simulation retain
-    #any parameter of navigator1 that isn't changed
-    navigator1 = mothpy_models.moth_modular(sim_region, cd['x_start'], cd['y_start'],cd['nav_type'] , 2, cd['wait_type'])
-    navigator1.base_turn_angle = cd['base_turn_angle']
-    navigator1.threshold = cd['threshold']
-    navigator1.duration = cd['duration']
-
-    
-    #set up a large number of navigators with different properties
-    navigators = []
-    navigator_titles = []
-
-
-    def call_navigators(wait,cast,nav):
+def call_navigators(wait,cast,nav):
         for j in range(10):
             for i in range(20):
                 new_navigator = copy.copy(navigator1)
@@ -45,6 +24,27 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
                 
             navigators.append(new_navigator)
             navigator_titles.append(title)
+def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json',
+                           titles_file_name = 'titles.json'):
+    with open(job_file_name) as data_file:
+        cd = json.load(data_file) #constants dictionary
+    sim_region = models.Rectangle(0., -1., 4., 1.)
+
+
+    #call the base navigator. the competing navigators in the simulation retain
+    #any parameter of navigator1 that isn't changed
+    navigator1 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'],cd['nav_type'] , 2, cd['wait_type'])
+    navigator1.base_turn_angle = cd['base_turn_angle']
+    navigator1.threshold = cd['threshold']
+    navigator1.duration = cd['duration']
+
+    
+    #set up a large number of navigators with different properties
+    navigators = []
+    navigator_titles = []
+
+
+
     
     call_navigators(1,2,'alex')
     call_navigators(1,3,'alex')
@@ -63,6 +63,7 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     with open(data_file_name, 'w') as outfile:
         json.dump(dict_list, outfile)
     return navigator_titles
+
 
 
 
