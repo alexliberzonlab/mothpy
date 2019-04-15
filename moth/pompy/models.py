@@ -11,7 +11,6 @@ __license__ = 'MIT'
 import numpy as np
 import scipy.interpolate as interp
 import random
-from Carde_navigator import carde1,carde2,crw
 
 class Puff(object):
     """

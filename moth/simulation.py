@@ -9,19 +9,18 @@ from __future__ import division
 __authors__ = 'Noam Benelli'
 
 
-import sys
-import pylab
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors
 import numpy as np
-import models
-import Carde_navigator
-import processors
-import scipy.misc
+import os
+import imp
+import mothpy_models
+pathh = os.path.join(os.getcwd(), 'pompy', 'models.py')
+models = imp.load_source('models', pathh)
 
-from demos import _close_handle,_set_up_figure,_simulation_loop
-from shapes import circle,square , cx ,cy
+#import processors
+pathh = os.path.join(os.getcwd(), 'pompy', 'processors.py')
+processors = imp.load_source('processors', pathh)
+
+from moth_demos import _simulation_loop
 
 
   
@@ -35,14 +34,12 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
     a copy of the concetration_array_demo with the moth actions integrated
     """
     #define simulation region
-    wind_region = models.Rectangle(0., -2., 10., 2.)
-    sim_region = models.Rectangle(0., -1., 4., 1.)
+    wind_region = models.Rectangle(0., -2.,10., 2.)
+    sim_region = models.Rectangle(0., -1.,4., 1.)
     #establish the dictionaries and lists that will be used
     navigator_dict ={}
-    times_list = [] # a list of the time it took different moths to reach the goal, for hist purposes
     del_list = [] # a list of the moth indices (i,j) that finished the track and were deleted 
 
-    dist_it=0 #distance on y axis between starting points on different iterations
     for j in range(len(navigators)):
         moth_dict = {}
         list_dict = {}
@@ -56,7 +53,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
 
         
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21, 11,1,char_time,amplitude)
+    wind_model = mothpy_models.WindModel(wind_region, 21, 11,1,char_time,amplitude)
     # set up plume model
     pfr = puff_release_rate
     psr = puff_spread_rate
@@ -69,8 +66,6 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
     #set concetration array generator
     array_gen = processors.ConcentrationArrayGenerator(sim_region, 0.01, 500,
                                                        1000, 1.)
-    # display initial concentration field as image
-    conc_array = array_gen.generate_single_array(plume_model.puff_array)
 
 
     #run the wind and plume models for 4 seconds before navigators are started

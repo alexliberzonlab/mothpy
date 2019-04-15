@@ -2,7 +2,7 @@ from __future__ import division
 
 __authors__ = 'Noam Benelli'
 
-import numpy as np
+
 from Job_generator import generate_job
 from Casting_competition import create_trajectory_data
 from graphics_from_file import save_plot, save_detection_plot

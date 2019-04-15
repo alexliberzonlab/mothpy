@@ -8,7 +8,14 @@ Created on Tue Mar 19 16:22:41 2019
 import numpy as np
 import random
 from Carde_navigator import carde1,carde2,crw
-from pompy import models
+
+#import models from a subdirectory
+import os
+import imp
+pathh = os.path.join(os.getcwd(), 'pompy', 'models.py')
+models = imp.load_source('models', pathh)
+
+
 
 
 class WindModel(models.WindModel):
@@ -80,7 +87,7 @@ class MeanderingGenerator(object):
 
 
 
-class moth_modular(object):
+class MothModular(object):
     def __init__(self,sim_region,x,y,nav_type = 1,
                  cast_type = 'carde2', wait_type = 1,
                  beta=30, duration =0.5, speed = 200.0):
