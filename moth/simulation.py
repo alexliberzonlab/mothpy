@@ -13,14 +13,8 @@ import numpy as np
 import os
 import imp
 import mothpy_models
-pathh = os.path.join(os.getcwd(), 'pompy', 'models.py')
-models = imp.load_source('models', pathh)
-
-#import processors
-pathh = os.path.join(os.getcwd(), 'pompy', 'processors.py')
-processors = imp.load_source('processors', pathh)
-
-from moth_demos import _simulation_loop
+from pompy import models, processors
+from moth_demos import _simulation_loop 
 
 
   

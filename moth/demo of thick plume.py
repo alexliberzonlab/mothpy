@@ -14,8 +14,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
-import models
-import processors
+from pompy import models, processors
 
 
 def _close_handle(event):

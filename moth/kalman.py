@@ -15,10 +15,9 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors
 import numpy as np
-import models
-import processors
+from pompy import models, processors, demos
 import scipy.misc
-from demos import _close_handle,_set_up_figure,_simulation_loop
+# from demos import _close_handle,_set_up_figure,_simulation_loop
 from shapes import circle,square , cx ,cy
 
 

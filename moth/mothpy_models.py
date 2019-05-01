@@ -12,9 +12,7 @@ from Carde_navigator import carde1,carde2,crw
 #import models from a subdirectory
 import os
 import imp
-pathh = os.path.join(os.getcwd(), 'pompy', 'models.py')
-models = imp.load_source('models', pathh)
-
+from pompy import models
 
 
 
@@ -22,6 +20,7 @@ class WindModel(models.WindModel):
     def __init__(self, sim_region, n_x=15, n_y=15, u_av=0.4,char_time = 3.5,amplitude = 0.1, v_av=0., Kx=2.,
                  Ky=2., noise_gain=0., noise_damp=0.2, noise_bandwidth=0.2, #noise_gain=5 change to 0
                  noise_rand=np.random):
+        super(WindModel, self).__init__()
         self.char_time = char_time
         self.amplitude = amplitude
         self.noise_gen = MeanderingGenerator(np.zeros((2, 8)), noise_damp,
@@ -78,15 +77,7 @@ class MeanderingGenerator(object):
         self.T+=dt #timestep
 
         
-        
-
-
-
-
-
-
-
-
+  
 class MothModular(object):
     def __init__(self,sim_region,x,y,nav_type = 1,
                  cast_type = 'carde2', wait_type = 1,
