@@ -13,10 +13,7 @@ import numpy as np
 import os
 import imp
 import mothpy_models
-from pompy import models, processors
-from moth_demos import _simulation_loop 
-
-
+from pompy import models, processors, demos
   
 def moth_simulation(num_it=10,navigators = (),t_max = 1,
                     char_time=3.5, amplitude = 0.1 ,
@@ -107,7 +104,7 @@ def moth_simulation(num_it=10,navigators = (),t_max = 1,
 
             
     # start simulation loop
-    _simulation_loop(dt, t_max, 0, draw_iter_interval, update_func,
+    demos._simulation_loop(dt, t_max, 0, draw_iter_interval, update_func,
                      draw_func)
 
     """

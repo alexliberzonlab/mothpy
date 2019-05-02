@@ -7,46 +7,45 @@ Created on Tue Mar 19 16:22:41 2019
 
 import numpy as np
 import random
-from Carde_navigator import carde1,carde2,crw
-
-#import models from a subdirectory
-import os
-import imp
+from carde_navigator import carde1, carde2, crw
 from pompy import models
 
 
 
 class WindModel(models.WindModel):
-    def __init__(self, sim_region, n_x=15, n_y=15, u_av=0.4,char_time = 3.5,amplitude = 0.1, v_av=0., Kx=2.,
+    def __init__(self, sim_region, nx=15, ny=15, u_av=0.4,char_time = 3.5,amplitude = 0.1, v_av=0., Kx=2.,
                  Ky=2., noise_gain=0., noise_damp=0.2, noise_bandwidth=0.2, #noise_gain=5 change to 0
                  noise_rand=np.random):
-        super(WindModel, self).__init__()
-        self.char_time = char_time
-        self.amplitude = amplitude
-        self.noise_gen = MeanderingGenerator(np.zeros((2, 8)), noise_damp,
-                                                noise_bandwidth, noise_gain,
-                                                noise_rand,self.char_time,self.amplitude)
+        super(WindModel, self).__init__(sim_region,nx=nx,ny=ny,u_av=u_av,char_time=char_time,
+                                        amplitude=amplitude,v_av=v_av,Kx=Kx,Ky=Ky,
+                                        noise_gain=noise_gain, noise_damp=noise_damp,
+                                        noise_bandwidth=noise_bandwidth,noise_rand=noise_rand)
+        # self.char_time = char_time
+        # self.amplitude = amplitude
+        # self.noise_gen = MeanderingGenerator(np.zeros((2, 8)), noise_damp,
+        #                                         noise_bandwidth, noise_gain,
+        #                                         noise_rand,self.char_time,self.amplitude)
         # compute grid node spacing
-        self.dx = sim_region.w / (n_x - 1)  # x grid point spacing
-        self.dy = sim_region.h / (n_y - 1)  # y grid point spacing
+        # self.dx = abs(sim_region.w / (n_x - 1)  # x grid point spacing
+        # self.dy = sim_region.h / (n_y - 1)  # y grid point spacing
         # initialise wind velocity field to mean values
         # +2s are to account for boundary grid points
-        self._u = np.ones((n_x + 2, n_y + 2)) * u_av
-        self._v = np.ones((n_x + 2, n_y + 2)) * v_av
+        # self._u = np.ones((n_x + 2, n_y + 2)) * u_av
+        # self._v = np.ones((n_x + 2, n_y + 2)) * v_av
         # create views on to field interiors (i.e. not including boundaries)
         # for notational ease - note this does not copy any data
-        self._u_int = self._u[1:-1, 1:-1]
-        self._v_int = self._v[1:-1, 1:-1]
+        # self._u_int = self._u[1:-1, 1:-1]
+        # self._v_int = self._v[1:-1, 1:-1]
         # preassign array of corner means values
-        self._corner_means = np.array([u_av, v_av]).repeat(4)
+        # self._corner_means = np.array([u_av, v_av]).repeat(4)
         # precompute linear ramp arrays with size of boundary edges for
         # linear interpolation of corner values
-        self._ramp_x = np.linspace(0., 1., n_x + 2)
-        self._ramp_y = np.linspace(0., 1., n_y + 2)
+        # self._ramp_x = np.linspace(0., 1., nx + 2)
+        # self._ramp_y = np.linspace(0., 1., ny + 2)
         # set up cubic spline interpolator for calculating off-grid wind
         # velocity field values
-        self._x_points = np.linspace(sim_region.x_min, sim_region.x_max, n_x)
-        self._y_points = np.linspace(sim_region.y_min, sim_region.y_max, n_y)
+        # self._x_points = np.linspace(sim_region.x_min, sim_region.x_max, n_x)
+        # self._y_points = np.linspace(sim_region.y_min, sim_region.y_max, n_y)
         # initialise flag to indicate velocity field interpolators not set
         self._interp_set = True
     
