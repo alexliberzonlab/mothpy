@@ -7,7 +7,7 @@ Created on Tue Mar 19 16:22:41 2019
 
 import numpy as np
 import random
-from carde_navigator import carde1, carde2, crw
+from Carde_navigator import carde1, carde2, crw
 from pompy import models
 
 
