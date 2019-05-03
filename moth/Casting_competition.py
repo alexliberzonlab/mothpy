@@ -1,10 +1,9 @@
 from __future__ import division
 
 __authors__ = 'Noam Benelli'
-import models
+from pompy import models
 import mothpy_models
 from simulation import moth_simulation
-#from statistics import calc_stats
 import json
 import copy
 
