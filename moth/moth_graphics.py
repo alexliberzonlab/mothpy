@@ -12,8 +12,12 @@ import matplotlib.pyplot as plt
 from shapes import circle,square , cx ,cy
 
    
-def plot(kalman_dict, title = 'single navigator in flight'):
-    fig, ax = plt.subplots()
+def plot(kalman_dict, title = 'single navigator in flight', ax = None):
+    if ax is None:
+        fig, ax = plt.subplots()
+    else:
+        fig = ax.figure
+
     num_it = len(kalman_dict)
     # graphic function - shows only kalman trajectories, saves as file
     color_wheel =['-b','-r']

@@ -4,6 +4,7 @@ __authors__ = 'Noam Benelli'
 from kalman import kalman_filter 
 from moth_graphics import plot, detection_plot
 import json
+import matplotlib.pyplot as plt
 
 
 def save_plot(job_file_name = 'job.json',data_file_name ='data1.json',
@@ -17,7 +18,8 @@ def save_plot(job_file_name = 'job.json',data_file_name ='data1.json',
         diff_dict = dict_list[i]
         kalman_dict = kalman_filter(diff_dict)
         navigator_title = navigator_titles[i] + title
-        plot(kalman_dict,navigator_title)
+        fig, ax = plt.subplots()
+        plot(kalman_dict,navigator_title,ax=ax)
 
 def save_detection_plot(job_file_name = 'job.json',data_file_name ='data1.json',
                         navigator_titles = ('2','3','carde1','carde2','carde2')):
