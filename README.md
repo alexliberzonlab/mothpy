@@ -1,3 +1,5 @@
+[![DOI](https://www.zenodo.org/badge/116568819.svg)](https://www.zenodo.org/badge/latestdoi/116568819)
+
 # MothPy
 
 The `mothpy` package is a NumPy based implementation of moth-inspired navigation strategies that uses
@@ -134,3 +136,10 @@ The same approach should be applied to any of the movement functions. After we d
 ```python
  navigator1 = models.moth_modular(sim_region, cd['x_start'], cd['y_start'], cd['nav_type'], cd['cast_type'], 'example wait type')
 ```
+
+
+## How to cite this work
+
+Please use the DOI in the suggested form: 
+
+Benneli, N. and Liberzon, A. "MothPy - a moth-inspired navigator flying in a plume-odor simulation fields" [![DOI](https://www.zenodo.org/badge/116568819.svg)](https://www.zenodo.org/badge/latestdoi/116568819)
