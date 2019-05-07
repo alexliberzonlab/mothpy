@@ -16,7 +16,7 @@ def plot(kalman_dict, title = 'single navigator in flight'):
     # graphic function - shows only kalman trajectories, saves as file
     color_wheel =['-b','-r']
     for i in range(num_it): #present the different kalman trajectories
-        kzip = zip(*kalman_dict["Kalman_list{0}".format(i)])
+        kzip = list(zip(*kalman_dict["Kalman_list{0}".format(i)]))
         kx,ky = kzip[0],kzip[1]
         slice_list = [0] #a list of indexes of where to slice the list
         #the different lists will be presented with different colors (red/blue)
