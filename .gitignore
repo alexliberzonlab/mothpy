@@ -8,3 +8,4 @@ data*.json
 moth/*cast*.png
 docs/_build/
 moth/.vscode/settings.json
+.vscode/settings.json

@@ -25,7 +25,7 @@ python compare_navigators_in_different_wind_conditions.py
 
 ```
 
-![Demo flight](moth/Demonstration_of_different_navigation_strategies.png)
+![Demo flight](img/Demonstration_of_different_navigation_strategies.png)
 
 ## How to create figures from the paper
 
@@ -69,8 +69,8 @@ Would save an image per each navigation attempt in the default settings, and tha
 
 The file line_graphs plots bar graphs of the four different simulations. It read from the Data and Job files, so those could be replaced and There is no need to set up anything for this file, just run it. The output should look like this:
 
-![Success Percentage vs Puff Spread Rate](moth/spVSpsr.png)
-![Average Navigation Time vs Puff Spread Rate](moth/spVSpsr.png)
+![Success Percentage vs Puff Spread Rate](img/spVSpsr.png)
+![Average Navigation Time vs Puff Spread Rate](img/spVSpsr.png)
 
 ## How to manage and design navigators
 
