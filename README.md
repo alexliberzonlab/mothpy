@@ -11,13 +11,20 @@ for details
 This Python package allows simulation moth-like navigators in dynamic 2D odour
 concentration fields spread in turbulent flows
 
+Liberzon, Harrington, Daniel, Gurka, Harari and Zilman  "Moth-inspired navigation algorithm in a turbulent odor plume from a pulsating source" proposed a novel navigator principle using properties of a turbulent patchy plume, https://journals.plos.org/plosone/article/comments?id=10.1371/journal.pone.0198422 
+
+In order to compare this moth-inspired navigator with other navigator types available in the literature, e.g. by Carde and co-workers, we use `pompy` https://github.com/InsectRobotics/pompy and add these moth-inspiried navigators to its simulation fields. We try to create mean wind with meandering and turbulence and vary odor release parameters to test various navigators' statistics, e.g. success rate, flight time, etc. 
+
+
 ## Installation and requirements
 
     Python 2.7
     Numpy
     Scipy
     Matplotlib
-    pompy
+    pompy*
+
+Note: we use an older version of `pompy`, included in the repository. In the future, we would be able to update to a newer version of `pompy` and implement it as a submodule. 
 
 ## Example usage
 
