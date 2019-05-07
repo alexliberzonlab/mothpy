@@ -1,6 +1,0 @@
-`pompy.models` module
-=================================
-
-.. automodule:: pompy.models
-    :members:
-    :exclude-members: ColouredNoiseGenerator, SlottedIterable
