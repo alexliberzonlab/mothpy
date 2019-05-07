@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
+from builtins import zip
 
 __authors__ = 'Noam Benelli'
 
@@ -12,6 +13,7 @@ from shapes import circle,square , cx ,cy
 
    
 def plot(kalman_dict, title = 'single navigator in flight'):
+    fig, ax = plt.subplots()
     num_it = len(kalman_dict)
     # graphic function - shows only kalman trajectories, saves as file
     color_wheel =['-b','-r']
@@ -31,27 +33,26 @@ def plot(kalman_dict, title = 'single navigator in flight'):
             flag = True #in the case where len(slice_list)==1, the flag will remain flase
             xslice = kx[slice_list[j]:slice_list[j+1]+1]
             yslice = ky[slice_list[j]:slice_list[j+1]+1]
-            plt.plot(xslice,yslice,color_wheel[j%2]) #choose a color from the color wheel 
+            ax.plot(xslice,yslice,color_wheel[j%2]) #choose a color from the color wheel 
 
         #draw the final stretch of the trajectory after the last odor event 
         if flag == True:
             xslice = kx[slice_list[j+1]:]
             yslice = ky[slice_list[j+1]:]        
-            plt.plot(xslice,yslice,color_wheel[(j+1)%2])
+            ax.plot(xslice,yslice,color_wheel[(j+1)%2])
         else:
-            plt.plot(kx,ky,'-b')
+            ax.plot(kx,ky,'-b')
 
     marker = circle(500,20,30)  
-    plt.plot(marker[0],marker[1],'-r')#add a red circle for the odor source 
-    plt.ylim(0,1000)
-    plt.xlim(0,1000)
-    plt.xlabel('X position')
-    plt.ylabel('Y position')
-    plt.title(title)
-    #plt.legend(('calculated','kalman'))
+    ax.plot(marker[0],marker[1],'-r')#add a red circle for the odor source 
+    ax.set_ylim(0,1000)
+    ax.set_xlim(0,1000)
+    ax.set_xlabel('X position')
+    ax.set_ylabel('Y position')
+    ax.set_title(title)
     plt.legend(loc='upper left')  
     #plt.show()
-    plt.savefig(title + '.png')
+    # fig.savefig(title + '.png')
     plt.clf() 
 
 
