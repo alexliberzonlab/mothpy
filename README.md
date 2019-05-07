@@ -143,3 +143,8 @@ The same approach should be applied to any of the movement functions. After we d
 Please use the DOI in the suggested form: 
 
 Benneli, N. and Liberzon, A. "MothPy - a moth-inspired navigator flying in a plume-odor simulation fields" [![DOI](https://www.zenodo.org/badge/116568819.svg)](https://www.zenodo.org/badge/latestdoi/116568819)
+
+
+## Run the Getting Starting test online: 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/alexliberzonlab/mothpy/master?filepath=notebooks%2Fmothpy_getting_started.ipynb)
+
