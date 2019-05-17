@@ -28,13 +28,13 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
 
 
     def call_navigators(wait,cast,nav):
-        for j in range(10):
-            for i in range(20):
+        for j in range(20):
+            for i in range(200):
                 new_navigator = copy.copy(navigator1)
                 new_navigator.wait_type = wait
                 new_navigator.cast_type = cast
                 new_navigator.nav_type = nav
-                new_navigator.y = 450 - i*3
+                new_navigator.y = 600 - i
                 new_navigator.x = 499 - j
 
             title =  \
