@@ -16,7 +16,6 @@ plots a single plot for each one
 """
 
 if __name__ == "__main__":
-    """
     for i in range(20):
         job_file_name = 'job_pfr'+ str(i)+ '.json'
         data_file_name = 'data_pfr'+ str(i)+ '.json'
@@ -30,7 +29,6 @@ if __name__ == "__main__":
         #save_plot(job_file_name,data_file_name,title,navigator_titles)
         #save_detection_plot(job_file_name,data_file_name,navigators_titles)
         print ('finished simulation number ' + str(i+1))
-    """
     for i in range(20):
         job_file_name = 'job_amp'+ str(i)+ '.json'
         data_file_name = 'data_amp'+ str(i)+ '.json'
