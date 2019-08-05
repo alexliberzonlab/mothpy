@@ -51,13 +51,13 @@ def _simulation_loop(dt, t_max, draw_iter_interval, update_func,
             #time_text.set_text('Simulation time: {0} seconds'.format(t))
             plt.draw()
             plt.pause(0.001)
-        if t ==1.5:
-            plt.savefig('puff_spread_rate = ' + str(psr)+'.png')
+        if t>=4 and t%0.1 ==0 and t<6:
+            plt.savefig('puff_spread_rate = ' + str(psr)+str(t)+'.png')
 
 
 
 
-def concentration_array_demo(psr,dt=0.01, t_max=3.5, draw_iter_interval=50):
+def concentration_array_demo(psr,dt=0.01, t_max=8, draw_iter_interval=50):
     """
     Demonstration of setting up plume model and processing the outputted
     puff arrays with the ConcentrationArrayGenerator class, the resulting
@@ -67,12 +67,12 @@ def concentration_array_demo(psr,dt=0.01, t_max=3.5, draw_iter_interval=50):
     wind_region = models.Rectangle(0., -2., 10., 2.)
     sim_region = models.Rectangle(0., -1., 2., 1.)
     # set up wind model
-    wind_model = models.WindModel(wind_region, 21., 11.,noise_gain=0, u_av=2,)
+    wind_model = models.WindModel(wind_region, 21, 11,noise_gain=0, u_av=0.47,char_time = 3.5,amplitude = 0.02)
     # set up plume model
     plume_model = models.PlumeModel(sim_region, (0.1, 0., 0.), wind_model,
-                                    centre_rel_diff_scale=1.5,
-                                    puff_release_rate=1000,
-                                    puff_init_rad=0.001,puff_spread_rate=psr)
+                                    centre_rel_diff_scale=0.6,
+                                    puff_release_rate=50,
+                                    puff_init_rad=0.001,puff_spread_rate=0.0001)
     # set up concentration array generator
     array_gen = processors.ConcentrationArrayGenerator(sim_region, 0.01, 500,
                                                        500, 1.)

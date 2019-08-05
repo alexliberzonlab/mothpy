@@ -26,10 +26,11 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
     navigators = []
     navigator_titles = []
 
-
+    """
     def call_navigators(wait,cast,nav):
         for j in range(10):
             for i in range(20):
+                #print "navigator number " + str(j)
                 new_navigator = copy.copy(navigator1)
                 new_navigator.wait_type = wait
                 new_navigator.cast_type = cast
@@ -37,6 +38,16 @@ def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json
                 new_navigator.y = 450 - i*3
                 new_navigator.x = 499 - j
 
+    """
+    def call_navigators(wait,cast,nav):
+        for j in range(60):
+            for i in range(200):
+                new_navigator = copy.copy(navigator1)
+                new_navigator.wait_type = wait
+                new_navigator.cast_type = cast
+                new_navigator.nav_type = nav
+                new_navigator.y = 600 - i
+                new_navigator.x = 499 - 2*j
             title =  \
                 ' cast - ' + str(new_navigator.cast_type) \
                 + '; nav - ' + str(new_navigator.nav_type) \

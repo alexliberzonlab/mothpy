@@ -134,9 +134,64 @@ def present_graphs():
     plt.legend(legends)
     plt.savefig('Average Navigation Time vs '+ xlabel)
     plt.show()
+
+def print_data():
+    num_jobs = 4
+    (xlabel,values)=process_jobs(num_jobs)
+    legends = ('A','B','C','D')
+    liberzonlist =[]
+    Benellilist = []
+    lfslist =[]
+    fslist = []
+    for i in range(num_jobs):
+        loop = str(i)
+        data_list = get_data('data'+loop+'.json',4)
+        #print (data_list[0])
+        liberzonlist.append(data_list[0])
+        Benellilist.append((data_list[1]))
+        lfslist.append((data_list[2]))
+        fslist.append((data_list[3]))
+    #[succ_prec ,average_time_,average_efficiency]
+    lib_succ, lib_avg,lib_efficiency = zip(*liberzonlist)
+    Bene_succ, Bene_avg,Bene_efficiency = zip(*Benellilist)
+    lfs_succ, lfs_avg, lfs_efficiency = zip(*lfslist)
+    fs_succ, fs_avg,fs_efficiency = zip(*fslist)
+
+
+    if xlabel == 'puff_spread_rate':
+        print (r'$\sigma$')
+    else:
+        print (xlabel)
+    print ('Success (%)')
+    print "A,B,C,D"
+    print str(values[0])
+    print lib_succ[0],Bene_succ[0],lfs_succ[0],fs_succ[0]
+    print str(values[1])
+    print lib_succ[1],Bene_succ[1],lfs_succ[1],fs_succ[1]
+    print str(values[2])
+    print lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2]
+    print str(values[3])
+    print lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3]
+    #ax.set_title('Success Percentage vs '+ xlabel)
+    #plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
+    if xlabel == 'puff_spread_rate':
+        print (r'$\sigma$')
+    else:
+        print (xlabel)
+    print ('T/tau')
+    print "A,B,C,D"
+    print str(values[0])
+    print lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0]
+    print str(values[1])
+    print lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1]
+    print str(values[2])
+    print lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2]
+    print str(values[3])
+    print lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3]
     
 if __name__ == "__main__":
 	present_graphs()
+    #print_data()
 
     
 

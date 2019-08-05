@@ -5,16 +5,13 @@ Created on Tue Jul 23 16:53:54 2019
 @author: Noam Benelli
 """
 
-import sys
-import pylab
+import matplotlib
 import json
 
 
 def open_data(file_name = 'data0.json'):
     with open('data0.json') as data_file:  
         dict_list = json.load(data_file) 
-    print len(dict_list)
-    print len(dict_list[0])
     return dict_list
     
     
@@ -49,17 +46,18 @@ def arrange_dict_list(dict_list):
     return lst
         
     
-    
-    
-dict_list = open_data()
-points = arrange_dict_list(dict_list)
-print points
+def create_graph():
+    dict_list = open_data()
+    points = arrange_dict_list(dict_list)
 
-kzip = list(zip(*points))
-x,y = kzip[0],kzip[1]
+    kzip = list(zip(*points))
+    x,y = kzip[0],kzip[1]
+    matplotlib.pyplot.xlabel('tc(sec)')
+    matplotlib.pyplot.ylabel('time of encounter(sec)')
 
-import matplotlib
-matplotlib.pyplot.scatter(x,y)
+    matplotlib.pyplot.scatter(x,y)
+if __name__ == "__main__":
+    create_graph()
 
     
          

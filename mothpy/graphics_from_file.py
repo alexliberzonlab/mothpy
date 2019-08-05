@@ -15,9 +15,9 @@ def save_plot(job_file_name = 'job.json',data_file_name ='data1.json',
         dict_list = json.load(data_file2) #dictionary tuple
 
     for i in range(len(dict_list)-1):
-        diff_dict = dict_list[i]
+        diff_dict = dict_list[i+38]
         kalman_dict = kalman_filter(diff_dict)
-        navigator_title = navigator_titles[i] + title
+        navigator_title = str(navigator_titles[i]) + title
         fig, ax = plt.subplots()
         plot(kalman_dict,navigator_title,ax=ax)
 
@@ -39,5 +39,6 @@ def save_detection_plot(job_file_name = 'job.json',data_file_name ='data1.json',
 
 
 
+
 if __name__ == "__main__":
-    save_plot('job0.json','data0.json')
+    save_plot('job0.json','data0.json', '-', range(1000))
