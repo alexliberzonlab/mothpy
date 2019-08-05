@@ -19,7 +19,7 @@ In order to compare this moth-inspired navigator with other navigator types avai
 
 ## Installation and requirements
 
-    Python 2.7
+    Python 3
     Numpy
     Scipy
     Matplotlib
