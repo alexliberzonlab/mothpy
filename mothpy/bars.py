@@ -163,7 +163,7 @@ def succuss_precentage(dict_list):
     
     succuss_precentage = winners / len(dict_list) *100      
     return succuss_precentage
-        
+
 
 #main function
 def calc_stats(diff_dict):
@@ -178,85 +178,61 @@ def calc_stats(diff_dict):
 
 
 
+def optimal_distance_range(dict_list):
+    def first_movement(diff_list):
+        for i in range(len(diff_list)):
+            if diff_list[i][5] != 'wait':
+                #print 'state = '+ diff_list[i][5]
+                return i
+    def calc_speed(diff_list):
+        i = first_movement(diff_list)
+        x1 = diff_list[i][0]
+        y1 = diff_list[i][1]
+        x2 = diff_list[i+1][0]
+        y2 = diff_list[i+1][1]
+        dist = distance(x1,y1,x2,y2)
+        dt = diff_list[i+1][2] - diff_list[i][2]
+        speed = dist/dt
+        print speed
+        return speed
+    
+    def optimal_time(diff_list):
+        x1 = diff_list[0][0]
+        y1 = diff_list[0][1]
+        x2 = diff_list[-1][0]
+        y2 = diff_list[-1][1]
+        opt_dist = distance(x1,y1,x2,y2)
+
+        speed = calc_speed(diff_list)
+        optimal_time = opt_dist/speed
+        return optimal_time
+        
+    def distance(x1,y1,x2,y2):
+       x = x2-x1
+       y = y2-y1
+       return (x**2+y**2)**0.5
+
+    def optimal_distance(diff_list):
+        x1 = diff_list[0][0]
+        y1 = diff_list[0][1]
+        x2 = diff_list[-1][0]
+        y2 = diff_list[-1][1]
+        return distance(x1,y1,x2,y2)
+    
+    optimal_times_list = []
+    for diff_dict in dict_list:
+        for key in diff_dict:
+            diff_list = diff_dict[key]
+            if diff_list[-1][-1]:
+                optimal = optimal_time(diff_list)
+                optimal_times_list.append(optimal)
+
+    print max(optimal_times_list)
+    print min(optimal_times_list)
 
 
 
-def create_graphs(tot_stats,int_loop):
-    nav_titles = ('Liberzon','Benelli','Large Final Sweeps','Final Sweeps')
-    colors = ('green','red','blue','yellow')
-    loop = str(int_loop)
-    data1 = tot_stats[0]
-    data2 = tot_stats[1]
-    data3 = tot_stats[2]
-    data4 = tot_stats[3]
 
-    ####################################################################
-    #one graph to show all of the data
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    n_groups = 4
-    bar_width = 0.5
-    opacity = 0.4
-    index = np.arange(0, 2*n_groups, 2)
-    """
-    chart = plt.bar(index, data1, bar_width, color='blue', edgecolor='black')
-    chart = plt.bar(index+bar_width, data2, bar_width, color='red', edgecolor='black')
-    chart = plt.bar(index+2*bar_width, data3, bar_width, color='green', edgecolor='black')
-    """
-    ax.set_xlabel('Performance (%)')
-    ax.set_title('Overall comparison')
-
-    plt.xticks(index+bar_width*1.5, ('Success %', 'AVG Time', 'AVG Efficiency'))
-    plt.legend()
-    plt.tight_layout()
-
-    #plt.show()
-    ############################################################################
-
-    ############################################################################
-    #three seperate graphs
-    #success percenrage
-    plt.figure()
-    (succ_prec ,average_time_,average_efficiency) = zip(*tot_stats)
-    ay = fig.add_subplot(111)
-    index = np.arange(0, n_groups, 1)
-
-    chart = plt.bar(index, succ_prec, bar_width, color = colors, edgecolor='black')
-    plt.xticks(index+bar_width*0.5, nav_titles)
-    title = 'Success Percentage'
-    plt.title(title)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(title +loop+'.png')
-    #plt.show()
-
-
-    #average time
-    plt.figure()
-    az = fig.add_subplot(111)
-
-    chart = plt.bar(index, average_time_, bar_width, color=('green','red','blue','yellow'), edgecolor='black')
-    plt.xticks(index+bar_width*0.5, nav_titles)
-    title ='Average Time'
-    plt.title(title)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(title +loop+'.png')
-    #plt.show()
-
-    #average_efficiency
-    plt.figure()
-    az = fig.add_subplot(111)
-
-    chart = plt.bar(index, average_efficiency, bar_width, color=('green','red','blue'), edgecolor='black')
-    plt.xticks(index+bar_width*0.5, nav_titles)
-    title = 'Average Efficiency'
-    plt.title(title)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(title +loop+'.png')
-    #plt.show()
 
 def multi_splice(list_dict,n):
     length =len(list_dict)
@@ -302,9 +278,17 @@ def check_for_duds():
                 
 if __name__ == "__main__":
     #check_for_duds()
+    
+
     for i in range(1):
         loop = str(i)
+        with open('data0.json') as data_file1:  
+            dict_list1 = json.load(data_file1)
+        optimal_distance_range(dict_list1)
+        """
         data_list = get_data('data'+loop+'.json',4)
         print(data_list[0])
         #create_graphs(data_list,loop)
+        """
+
 

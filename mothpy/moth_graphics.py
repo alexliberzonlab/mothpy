@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-from builtins import zip
+#from builtins import zip
 
 __authors__ = 'Noam Benelli'
 
@@ -56,8 +56,8 @@ def plot(kalman_dict, title = 'single navigator in flight', ax = None):
     ax.set_title(title)
     plt.legend(loc='upper left')  
     #plt.show()
-    # fig.savefig(title + '.png')
-    plt.clf() 
+    fig.savefig(title + '.png')
+    #plt.clf() 
 
 
 def detection_plot(kalman_dict, title = 'det plot'):

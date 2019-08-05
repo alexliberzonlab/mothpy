@@ -49,6 +49,7 @@ for i in range(1):
     with open('data0.json') as data_file2:  
         dict_list = json.load(data_file2) 
     new_dict ={}
+    print len(dict_list)
     kalman_dict0 = disp(dict_list[137],200)
     kalman_dict1 = disp(dict_list[369],100)
     kalman_dict2 = disp(dict_list[495],100)
