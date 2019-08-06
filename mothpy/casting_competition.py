@@ -63,9 +63,11 @@ def create_trajectory_data(const_dict,data_file_name ='data.json',
                                 False)
 
 
-    with open(data_file_name, 'w') as outfile:
-        json.dump(dict_list, outfile)
-    return navigator_titles
+    # with open(data_file_name, 'w') as outfile:
+    #     json.dump(dict_list, outfile)
+    # return navigator_titles
+
+    return dict_list
 
 
 

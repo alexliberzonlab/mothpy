@@ -3,14 +3,10 @@ dist/*
 pompy.egg*
 *.pyc
 .ipynb_checkpoints/*
-moth/data*.json
-data*.json
-moth/*cast*.png
+moth/*.json
+moth/*.png
 docs/_build/
 moth/.vscode/settings.json
 .vscode/settings.json
 mothpy.egg-info/SOURCES.txt
-job0.json
-job1.json
-job2.json
-job3.json
+*.json
