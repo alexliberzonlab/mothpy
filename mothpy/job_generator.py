@@ -1,4 +1,4 @@
-import json
+# import json
 def generate_job(char_time =3.5,amplitude =0.1,
                  job_file='job.json', puff_release_rate = 10, puff_spread_rate =0.003,
                   t_max =75., dt = 0.01,num_it =1, base_duration =0.2):
@@ -28,10 +28,10 @@ def generate_job(char_time =3.5,amplitude =0.1,
     const_dict['duration'] = base_duration
     
     
-    
+    return const_dict
     
 
 
-    with open(job_file, 'w') as outfile:
-        json.dump(const_dict, outfile)
+    # with open(job_file, 'w') as outfile:
+    #     json.dump(const_dict, outfile)
 

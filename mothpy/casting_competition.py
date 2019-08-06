@@ -7,10 +7,14 @@ from simulation import moth_simulation
 import json
 import copy
 
-def create_trajectory_data(job_file_name = 'job.json',data_file_name ='data.json',
+def create_trajectory_data(const_dict,data_file_name ='data.json',
                            titles_file_name = 'titles.json'):
-    with open(job_file_name) as data_file:
-        cd = json.load(data_file) #constants dictionary
+    # with open(job_file_name) as data_file:
+    #     cd = json.load(data_file) #constants dictionary
+
+
+    cd = const_dict
+    
     sim_region = models.Rectangle(0.,-1.,4., 1.)
 
 
