@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mothpy",
-    version="0.0.1",
+    version="0.0.2",
     author="Noam Benelli and Alex Liberzon",
     author_email="alex.liberzon@gmail.com",
     description="MothPy allows simulation moth-like navigators in dynamic 2D odour concentration fields spread in turbulent flows",
@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/alexliberzonlab/mothpy",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
