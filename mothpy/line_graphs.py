@@ -152,10 +152,10 @@ def print_data():
         lfslist.append((data_list[2]))
         fslist.append((data_list[3]))
     #[succ_prec ,average_time_,average_efficiency]
-    lib_succ, lib_avg,lib_efficiency = zip(*liberzonlist)
-    Bene_succ, Bene_avg,Bene_efficiency = zip(*Benellilist)
-    lfs_succ, lfs_avg, lfs_efficiency = zip(*lfslist)
-    fs_succ, fs_avg,fs_efficiency = zip(*fslist)
+    lib_succ, lib_avg,lib_sem = zip(*liberzonlist)
+    Bene_succ, Bene_avg,Bene_sem = zip(*Benellilist)
+    lfs_succ, lfs_avg, lfs_sem = zip(*lfslist)
+    fs_succ, fs_avg,fs_sem = zip(*fslist)
 
 
     if xlabel == 'puff_spread_rate':
@@ -172,6 +172,7 @@ def print_data():
     print lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2]
     print str(values[3])
     print lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3]
+
     #ax.set_title('Success Percentage vs '+ xlabel)
     #plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
     if xlabel == 'puff_spread_rate':
@@ -182,12 +183,16 @@ def print_data():
     print "A,B,C,D"
     print str(values[0])
     print lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0]
+    print lib_sem[0],Bene_sem[0],lfs_sem[0],fs_sem[0]
     print str(values[1])
     print lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1]
+    print lib_sem[1],Bene_sem[1],lfs_sem[1],fs_sem[1]
     print str(values[2])
     print lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2]
+    print lib_sem[2],Bene_sem[2],lfs_sem[2],fs_sem[2]
     print str(values[3])
     print lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3]
+    print lib_sem[3],Bene_sem[3],lfs_sem[3],fs_sem[3]
     
 if __name__ == "__main__":
 	present_graphs()
