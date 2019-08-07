@@ -9,8 +9,10 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import scipy.stats as stats
 import seaborn as sns
 sns.set(style="darkgrid")
+
 
 __authors__ = 'Noam Benelli'
 
@@ -47,6 +49,16 @@ def search_efficiency(dict_list):
     else:
         average = 0
     return average
+
+def times_print(dict_list):
+    #calculate the average time of flight for successful flights
+    times_list = []
+    for diff_dict in dict_list:
+        diff_list = diff_dict["diff_list{0}".format(0)]
+        if diff_list[-1][-1]:
+            finishing_time = diff_list[-1][2]
+            times_list.append(finishing_time)
+    print times_list
 
 def average_time(dict_list):
     #calculate the average time of flight for successful flights
@@ -152,6 +164,86 @@ def average_time_relative(dict_list):
     else:
         average = 0
     return average
+def time_standrd_error(dict_list):
+    ##(x,y,T,odor,gamma,state,success)
+    def first_movement(diff_list):
+        for i in range(len(diff_list)):
+            if diff_list[i][5] != 'wait':
+                #print 'state = '+ diff_list[i][5]
+                return i
+
+    def calc_speed(diff_list):
+        i = first_movement(diff_list)
+        x1 = diff_list[i][0]
+        y1 = diff_list[i][1]
+        x2 = diff_list[i+1][0]
+        y2 = diff_list[i+1][1]
+        dist = distance(x1,y1,x2,y2)
+        dt = diff_list[i+1][2] - diff_list[i][2]
+        speed = dist/dt
+        return speed
+
+    def optimal_time(diff_list):
+        x1 = diff_list[0][0]
+        y1 = diff_list[0][1]
+        x2 = diff_list[-1][0]
+        y2 = diff_list[-1][1]
+        opt_dist = distance(x1,y1,x2,y2)
+
+        speed = calc_speed(diff_list)
+        optimal_time = opt_dist/speed
+
+        return optimal_time
+        
+    def distance(x1,y1,x2,y2):
+       x = x2-x1
+       y = y2-y1
+       return (x**2+y**2)**0.5
+
+    def optimal_distance(diff_list):
+        x1 = diff_list[0][0]
+        y1 = diff_list[0][1]
+        x2 = diff_list[-1][0]
+        y2 = diff_list[-1][1]
+        return distance(x1,y1,x2,y2)
+    
+    
+    def traveled_distance(diff_list):
+        dist_sum = 0.0
+        for i in range(1,len(diff_list)):
+            if diff_list[i][-2]:
+                x1 = diff_list[i-1][0]
+                y1 = diff_list[i-1][1]
+                x2 = diff_list[i][0]
+                y2 = diff_list[i][1]
+                dist_sum += distance(x1,y1,x2,y2)
+        return dist_sum
+
+    def time_elasped(diff_list):
+        i = first_movement(diff_list)
+        time_ela = diff_list[i][2]-diff_list[-1][2]
+        return time_ela
+                
+    times_list = []
+    for diff_dict in dict_list:
+        for key in diff_dict:
+            diff_list = diff_dict[key]
+            if diff_list[-1][-1]:
+                elasped = time_elasped(diff_list)
+                optimal = optimal_time(diff_list)
+                relative_time = elasped/optimal
+                times_list.append(math.fabs(relative_time))
+
+    #print times_list
+    if len(times_list) != 0:
+        standard_error = stats.sem(times_list,0,1,'raise')
+        for item in times_list:
+            if math.isnan(standard_error):
+                print times_list
+                print 'is this the problem1???????'
+    else:
+        standard_error = 0
+    return standard_error
 
 def succuss_precentage(dict_list):
     winners = 0.
@@ -161,7 +253,8 @@ def succuss_precentage(dict_list):
         if diff_list[-1][-1]:
             winners += 1
     
-    succuss_precentage = winners / len(dict_list) *100      
+    dn =count_duds(dict_list)
+    succuss_precentage = winners / (len(dict_list)-dn) *100      
     return succuss_precentage
 
 
@@ -172,9 +265,9 @@ def calc_stats(diff_dict):
 
     avg_time = average_time_relative(diff_dict)
     
-    average_efficiency = search_efficiency(diff_dict)
+    standard_error = time_standrd_error(diff_dict)
 
-    return [succ_prec ,avg_time,average_efficiency]
+    return [succ_prec ,avg_time,standard_error]
 
 
 
@@ -193,7 +286,6 @@ def optimal_distance_range(dict_list):
         dist = distance(x1,y1,x2,y2)
         dt = diff_list[i+1][2] - diff_list[i][2]
         speed = dist/dt
-        print speed
         return speed
     
     def optimal_time(diff_list):
@@ -230,10 +322,6 @@ def optimal_distance_range(dict_list):
     print max(optimal_times_list)
     print min(optimal_times_list)
 
-
-
-
-
 def multi_splice(list_dict,n):
     length =len(list_dict)
     if length%n != 0:
@@ -259,36 +347,43 @@ def get_data(file_name,num):
 
     return data_list
     
-def check_for_duds():
-    #checks for the numer of navigators that have not moved for the entire simulation
+def count_duds(dict_list):
+    #the number of navigators that had not moved for the entire simulation
     #for each navigator in the dictionary it check the last entry in it's trajectory list
     #if it's state is 'waiting' at the last time step, we know it hasn't navigated at all.
-    with open('data0.json') as data_file1:  
-        dict_list = json.load(data_file1)
     dud_number = 0
     for nav_dict in dict_list:
         for key in nav_dict:
             #(x,y,T,odor,gamma,state,success)
             if nav_dict[key][-1][-2] == 'wait':
-                print('dud found')
+                #print('dud found')
                 dud_number +=1
             else:
-                print(nav_dict[key][-1][-2])
-    print(dud_number)
+                pass
+                #print(nav_dict[key][-1][-2])
+    return dud_number
                 
-if __name__ == "__main__":
-    #check_for_duds()
     
+def times_print(dict_list):
+    #calculate the average time of flight for successful flights
+    times_list = []
+    for diff_dict in dict_list:
+        diff_list = diff_dict["diff_list{0}".format(0)]
+        if diff_list[-1][-1]:
+            finishing_time = diff_list[-1][2]
+            times_list.append(finishing_time)
+    print times_list
+    
+if __name__ == "__main__":
 
+    
+    """
     for i in range(1):
         loop = str(i)
-        with open('data0.json') as data_file1:  
+        with open('data3.json') as data_file1:  
             dict_list1 = json.load(data_file1)
-        optimal_distance_range(dict_list1)
-        """
-        data_list = get_data('data'+loop+'.json',4)
-        print(data_list[0])
-        #create_graphs(data_list,loop)
-        """
-
-
+        #optimal_distance_range(dict_list1)
+        print len(dict_list1)
+        times_print(dict_list1)
+    """
+        
