@@ -163,15 +163,15 @@ def print_data():
     else:
         print (xlabel)
     print ('Success (%)')
-    print "A,B,C,D"
-    print str(values[0])
-    print lib_succ[0],Bene_succ[0],lfs_succ[0],fs_succ[0]
-    print str(values[1])
-    print lib_succ[1],Bene_succ[1],lfs_succ[1],fs_succ[1]
-    print str(values[2])
-    print lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2]
-    print str(values[3])
-    print lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3]
+    print ("A,B,C,D")
+    print (str(values[0]))
+    print (lib_succ[0],Bene_succ[0],lfs_succ[0],fs_succ[0])
+    print (str(values[1]))
+    print (lib_succ[1],Bene_succ[1],lfs_succ[1],fs_succ[1])
+    print (str(values[2]))
+    print (lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2])
+    print (str(values[3]))
+    print (lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3])
 
     #ax.set_title('Success Percentage vs '+ xlabel)
     #plt.xticks(index+bar_width*1.5, (str(values[0]), str(values[1]), str(values[2]),str(values[3])))
@@ -180,19 +180,19 @@ def print_data():
     else:
         print (xlabel)
     print ('T/tau')
-    print "A,B,C,D"
-    print str(values[0])
-    print lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0]
-    print lib_sem[0],Bene_sem[0],lfs_sem[0],fs_sem[0]
-    print str(values[1])
-    print lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1]
-    print lib_sem[1],Bene_sem[1],lfs_sem[1],fs_sem[1]
-    print str(values[2])
-    print lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2]
-    print lib_sem[2],Bene_sem[2],lfs_sem[2],fs_sem[2]
-    print str(values[3])
-    print lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3]
-    print lib_sem[3],Bene_sem[3],lfs_sem[3],fs_sem[3]
+    print ("A,B,C,D")
+    print (str(values[0]))
+    print (lib_avg[0],Bene_avg[0],lfs_avg[0],fs_avg[0])
+    print (lib_sem[0],Bene_sem[0],lfs_sem[0],fs_sem[0])
+    print (str(values[1]))
+    print (lib_avg[1],Bene_avg[1],lfs_avg[1],fs_avg[1])
+    print (lib_sem[1],Bene_sem[1],lfs_sem[1],fs_sem[1])
+    print (str(values[2]))
+    print (lib_avg[2],Bene_avg[2],lfs_avg[2],fs_avg[2])
+    print (lib_sem[2],Bene_sem[2],lfs_sem[2],fs_sem[2])
+    print (str(values[3]))
+    print (lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3])
+    print (lib_sem[3],Bene_sem[3],lfs_sem[3],fs_sem[3])
     
 def output_csv():
     num_jobs = 4

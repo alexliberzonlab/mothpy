@@ -58,7 +58,7 @@ def times_print(dict_list):
         if diff_list[-1][-1]:
             finishing_time = diff_list[-1][2]
             times_list.append(finishing_time)
-    print times_list
+    print (times_list)
 
 def average_time(dict_list):
     #calculate the average time of flight for successful flights
@@ -315,8 +315,8 @@ def optimal_distance_range(dict_list):
                 optimal = optimal_time(diff_list)
                 optimal_times_list.append(optimal)
 
-    print max(optimal_times_list)
-    print min(optimal_times_list)
+    print (max(optimal_times_list))
+    print (min(optimal_times_list))
 
 def multi_splice(list_dict,n):
     length =len(list_dict)
@@ -368,7 +368,7 @@ def times_print(dict_list):
         if diff_list[-1][-1]:
             finishing_time = diff_list[-1][2]
             times_list.append(finishing_time)
-    print times_list
+    print (times_list)
     
 if __name__ == "__main__":
 
