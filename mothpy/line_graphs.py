@@ -194,9 +194,69 @@ def print_data():
     print lib_avg[3],Bene_avg[3],lfs_avg[3],fs_avg[3]
     print lib_sem[3],Bene_sem[3],lfs_sem[3],fs_sem[3]
     
+def output_csv():
+    num_jobs = 4
+    (xlabel,values)=process_jobs(num_jobs)
+    legends = ('A','B','C','D')
+    liberzonlist =[]
+    Benellilist = []
+    lfslist =[]
+    fslist = []
+    for i in range(num_jobs):
+        loop = str(i)
+        data_list = get_data('data'+loop+'.json',4)
+        #print (data_list[0])
+        liberzonlist.append(data_list[0])
+        Benellilist.append((data_list[1]))
+        lfslist.append((data_list[2]))
+        fslist.append((data_list[3]))
+    #[succ_prec ,average_time_,average_efficiency]
+    lib_succ, lib_avg,lib_sem = zip(*liberzonlist)
+    Bene_succ, Bene_avg,Bene_sem = zip(*Benellilist)
+    lfs_succ, lfs_avg, lfs_sem = zip(*lfslist)
+    fs_succ, fs_avg,fs_sem = zip(*fslist)
+    
+    import csv
+    #when switching to python 3, replace the currently used open with the one hidden in a comment
+    #with open('data - '+ xlabel +'.csv', 'w', newline='') as outfile:
+    with open('data - '+ xlabel +'.csv', 'wb') as csvFile:
+        writer = csv.writer(csvFile)
+        a=writer.writerow
+        a(['Success (%)'])
+        a([None, "A","B","C","D"])
+        a([str(values[0])])
+        a([None,lib_succ[0],Bene_succ[0],lfs_succ[0],fs_succ[0]])
+        a([str(values[1])])
+        a([None,lib_succ[1],Bene_succ[1],lfs_succ[1],fs_succ[1]])
+        a([str(values[2])])
+        a([None,lib_succ[2],Bene_succ[2],lfs_succ[2],fs_succ[2]])
+        a([str(values[3])])
+        a([None,lib_succ[3],Bene_succ[3],lfs_succ[3],fs_succ[3]])
+        a([])
+        a(['tau'])
+        a([None, "A","Asem","B","Bsem","C","Csem","D","Dsem"])
+        a([str(values[0])]) 
+        a([None,lib_avg[0],lib_sem[0],Bene_avg[0],Bene_sem[0],\
+           lfs_avg[0],lfs_sem[0],fs_avg[0],fs_sem[0]])
+        a([str(values[1])]) 
+        a([None,lib_avg[1],lib_sem[1],Bene_avg[1],Bene_sem[1],\
+           lfs_avg[1],lfs_sem[1],fs_avg[1],fs_sem[1]])
+        a([str(values[2])]) 
+        a([None,lib_avg[2],lib_sem[2],Bene_avg[2],Bene_sem[2],\
+           lfs_avg[2],lfs_sem[2],fs_avg[2],fs_sem[2]])
+        a([str(values[3])]) 
+        a([None,lib_avg[3],lib_sem[3],Bene_avg[3],Bene_sem[3],\
+           lfs_avg[3],lfs_sem[3],fs_avg[3],fs_sem[3]])
+
+
+
+    csvFile.close()
+    
+    
 if __name__ == "__main__":
-	present_graphs()
+	#present_graphs()
     #print_data()
+    output_csv()
 
     
 
