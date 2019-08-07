@@ -237,10 +237,6 @@ def time_standrd_error(dict_list):
     #print times_list
     if len(times_list) != 0:
         standard_error = stats.sem(times_list,0,1,'raise')
-        for item in times_list:
-            if math.isnan(standard_error):
-                print times_list
-                print 'is this the problem1???????'
     else:
         standard_error = 0
     return standard_error
